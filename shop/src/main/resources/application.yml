@@ -6,12 +6,15 @@ spring:
     username: ${DATABASE_USER}
     password: ${DATABASE_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
-
-    jpa:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
       hibernate:
-        ddl-auto: update
-      show-sql: true
-      properties:
-        hibernate:
-          dialect: org.hibernate.dialect.MySQLDialect
-          format_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+logging:
+  level:
+    org.hibernate.orm.connections: WARN
+    org.hibernate: INFO

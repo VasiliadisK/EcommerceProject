@@ -22,4 +22,11 @@ public class GlobalExceptionHandler {
         ExceptionDto apiResponse = new ExceptionDto(message, HttpStatus.NOT_FOUND.value());
         return new ResponseEntity<>(apiResponse, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(ResourceAlreadyExistsException.class)
+    public ResponseEntity<ExceptionDto> myResourceAlreadyExistsException(ResourceAlreadyExistsException e) {
+        String message = e.getMessage();
+        ExceptionDto apiResponse = new ExceptionDto(message, HttpStatus.CONFLICT.value());
+        return new ResponseEntity<>(apiResponse, HttpStatus.CONFLICT);
+    }
 }

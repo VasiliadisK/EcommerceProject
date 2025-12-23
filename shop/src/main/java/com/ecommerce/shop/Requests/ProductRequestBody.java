@@ -15,5 +15,4 @@ public class ProductRequestBody {
     private double price;
     private boolean hasDiscount;
     private double discount;
-    private double finalPrice;
 }

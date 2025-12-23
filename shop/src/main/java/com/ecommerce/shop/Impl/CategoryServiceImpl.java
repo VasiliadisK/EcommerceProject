@@ -1,6 +1,7 @@
 package com.ecommerce.shop.Impl;
 
 import com.ecommerce.shop.DTO.CategoryDto;
+import com.ecommerce.shop.DTO.ResponseDTOs.CategoryResponseDto;
 import com.ecommerce.shop.Entities.Category;
 import com.ecommerce.shop.Exceptions.ApiException;
 import com.ecommerce.shop.Exceptions.ResourceNotFoundException;
@@ -10,6 +11,10 @@ import com.ecommerce.shop.Services.CategoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -28,13 +33,29 @@ public class CategoryServiceImpl implements CategoryService {
 
 
     @Override
-    public List<CategoryDto> getAllCategories() {
+    public CategoryResponseDto getAllCategories(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
         log.debug("into getAllCategories service implementation");
 
-        List<Category> categories = categoryRepository.findAll();
+        Sort sortByAndOrder = sortOrder.equalsIgnoreCase("asc")
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+
+        Pageable pageDetails = PageRequest.of(pageNumber, pageSize, sortByAndOrder);
+        Page<Category> categoryPage = categoryRepository.findAll(pageDetails);
+        List<Category> categories = categoryPage.getContent();
+
         if(categories.isEmpty())
             throw new ApiException("No categories currently exist in the database");
-        return categories.stream().map(category -> modelMapper.map(category, CategoryDto.class)).toList();
+        List<CategoryDto> categoryDtoList = categories.stream().map(category -> modelMapper.map(category, CategoryDto.class)).toList();
+
+        return CategoryResponseDto.builder()
+                .categories(categoryDtoList)
+                .pageNumber(categoryPage.getNumber())
+                .pageSize(categoryPage.getSize())
+                .totalElements(categoryPage.getTotalElements())
+                .totalPages(categoryPage.getTotalPages())
+                .isLastPage(categoryPage.isLast())
+                .build();
     }
 
     @Override

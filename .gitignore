@@ -12,6 +12,7 @@
 
 .idea
 target/
+/images
 
 # Package Files #
 *.jar

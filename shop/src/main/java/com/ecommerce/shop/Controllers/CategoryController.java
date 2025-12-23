@@ -1,6 +1,8 @@
 package com.ecommerce.shop.Controllers;
 
+import com.ecommerce.shop.Constants.AppConstants;
 import com.ecommerce.shop.DTO.CategoryDto;
+import com.ecommerce.shop.DTO.ResponseDTOs.CategoryResponseDto;
 import com.ecommerce.shop.RequestModels.CategoryRequestModel;
 import com.ecommerce.shop.Services.CategoryService;
 import jakarta.validation.Valid;
@@ -25,11 +27,16 @@ public class CategoryController {
     }
 
     @GetMapping("/public/categories")
-    public ResponseEntity<List<CategoryDto>> getAllCategories()
+    public ResponseEntity<CategoryResponseDto> getAllCategories(
+            @RequestParam(name = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER, required = false) Integer pageNumber,
+            @RequestParam(name = "pageSize", defaultValue = AppConstants.PAGE_SIZE, required = false) Integer pageSize,
+            @RequestParam(name = "sortBy", defaultValue = AppConstants.SORT_CATEGORIES_BY, required = false) String sortBy,
+            @RequestParam(name = "sortOrder", defaultValue = AppConstants.SORT_ORDER, required = false) String sortOrder
+    )
     {
         log.debug("Into getAllCategories controller");
 
-        List<CategoryDto> categories = categoryService.getAllCategories();
+        CategoryResponseDto categories = categoryService.getAllCategories(pageNumber, pageSize, sortBy, sortOrder);
         return new ResponseEntity<>(categories, HttpStatus.OK);
     }
 

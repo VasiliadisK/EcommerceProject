@@ -1,16 +1,14 @@
 package com.ecommerce.shop.Services;
 
 import com.ecommerce.shop.DTO.CategoryDto;
-import com.ecommerce.shop.Entities.Category;
+import com.ecommerce.shop.DTO.ResponseDTOs.CategoryResponseDto;
 import com.ecommerce.shop.RequestModels.CategoryRequestModel;
 import jakarta.validation.Valid;
-import org.springframework.http.ResponseEntity;
 
-import java.util.List;
 
 public interface CategoryService {
 
-    List<CategoryDto> getAllCategories();
+    CategoryResponseDto getAllCategories(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder);
 
     CategoryDto getCategoryById(Long categoryId);
 

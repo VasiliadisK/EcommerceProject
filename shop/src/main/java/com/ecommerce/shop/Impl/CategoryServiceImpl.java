@@ -6,7 +6,7 @@ import com.ecommerce.shop.Entities.Category;
 import com.ecommerce.shop.Exceptions.ApiException;
 import com.ecommerce.shop.Exceptions.ResourceNotFoundException;
 import com.ecommerce.shop.Repositories.CategoryRepository;
-import com.ecommerce.shop.RequestModels.CategoryRequestModel;
+import com.ecommerce.shop.DTO.RequestsDto.CategoryRequestDto;
 import com.ecommerce.shop.Services.CategoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -69,14 +69,14 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryDto createNewCategory(CategoryRequestModel categoryRequestModel) {
+    public CategoryDto createNewCategory(CategoryRequestDto categoryRequestDto) {
         log.debug("into createNewCategory service implementation");
 
-        Category categoryFromDb = categoryRepository.findByName(categoryRequestModel.getCategoryName());
+        Category categoryFromDb = categoryRepository.findByName(categoryRequestDto.getCategoryName());
         if (categoryFromDb != null)
             throw new ApiException("Category with the name " + categoryFromDb.getCategoryName() + " already exists");
 
-        Category category = modelMapper.map(categoryRequestModel, Category.class);
+        Category category = modelMapper.map(categoryRequestDto, Category.class);
         Category savedCategory = categoryRepository.save(category);
 
         return modelMapper.map(savedCategory, CategoryDto.class);

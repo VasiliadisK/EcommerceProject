@@ -3,7 +3,7 @@ package com.ecommerce.shop.Controllers;
 import com.ecommerce.shop.Constants.AppConstants;
 import com.ecommerce.shop.DTO.ProductDto;
 import com.ecommerce.shop.DTO.ResponseDTOs.ProductResponseDto;
-import com.ecommerce.shop.Requests.ProductRequestBody;
+import com.ecommerce.shop.DTO.RequestsDto.ProductRequestDto;
 import com.ecommerce.shop.Services.ProductService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -72,7 +71,7 @@ public class ProductController {
     }
 
     @PostMapping("/admin/categories/{categoryId}/product")
-    public ResponseEntity<ProductDto> AddProduct(@PathVariable Long categoryId, @Valid @RequestBody ProductRequestBody productRequest)
+    public ResponseEntity<ProductDto> AddProduct(@PathVariable Long categoryId, @Valid @RequestBody ProductRequestDto productRequest)
     {
         log.debug("into AddProduct controller");
 
@@ -82,9 +81,9 @@ public class ProductController {
     }
 
     @PutMapping("/admin/products/{productId}")
-    public ResponseEntity<ProductDto> updateProduct(@Valid @RequestBody ProductRequestBody productRequestBody,
+    public ResponseEntity<ProductDto> updateProduct(@Valid @RequestBody ProductRequestDto productRequestDto,
                                                     @PathVariable Long productId){
-        ProductDto updatedProductDTO = productService.updateProduct(productId, productRequestBody);
+        ProductDto updatedProductDTO = productService.updateProduct(productId, productRequestDto);
         return new ResponseEntity<>(updatedProductDTO, HttpStatus.OK);
     }
 

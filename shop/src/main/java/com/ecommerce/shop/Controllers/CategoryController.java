@@ -3,7 +3,7 @@ package com.ecommerce.shop.Controllers;
 import com.ecommerce.shop.Constants.AppConstants;
 import com.ecommerce.shop.DTO.CategoryDto;
 import com.ecommerce.shop.DTO.ResponseDTOs.CategoryResponseDto;
-import com.ecommerce.shop.RequestModels.CategoryRequestModel;
+import com.ecommerce.shop.DTO.RequestsDto.CategoryRequestDto;
 import com.ecommerce.shop.Services.CategoryService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -11,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -50,11 +48,11 @@ public class CategoryController {
     }
 
     @PostMapping("/admin/category")
-    public ResponseEntity<CategoryDto> createCategory(@Valid @RequestBody CategoryRequestModel categoryRequestModel)
+    public ResponseEntity<CategoryDto> createCategory(@Valid @RequestBody CategoryRequestDto categoryRequestDto)
     {
         log.debug("Into createCategory controller");
 
-        CategoryDto categoryDto = categoryService.createNewCategory(categoryRequestModel);
+        CategoryDto categoryDto = categoryService.createNewCategory(categoryRequestDto);
         return new ResponseEntity<>(categoryDto, HttpStatus.OK);
     }
 

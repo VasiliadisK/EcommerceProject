@@ -2,7 +2,7 @@ package com.ecommerce.shop.Services;
 
 import com.ecommerce.shop.DTO.CategoryDto;
 import com.ecommerce.shop.DTO.ResponseDTOs.CategoryResponseDto;
-import com.ecommerce.shop.RequestModels.CategoryRequestModel;
+import com.ecommerce.shop.DTO.RequestsDto.CategoryRequestDto;
 import jakarta.validation.Valid;
 
 
@@ -12,7 +12,7 @@ public interface CategoryService {
 
     CategoryDto getCategoryById(Long categoryId);
 
-    CategoryDto createNewCategory(@Valid CategoryRequestModel categoryRequestModel);
+    CategoryDto createNewCategory(@Valid CategoryRequestDto categoryRequestDto);
 
     CategoryDto deleteCategory(Long categoryId);
 

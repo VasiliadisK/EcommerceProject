@@ -5,12 +5,11 @@ import com.ecommerce.shop.DTO.ProductDto;
 import com.ecommerce.shop.DTO.ResponseDTOs.ProductResponseDto;
 import com.ecommerce.shop.Entities.Category;
 import com.ecommerce.shop.Entities.Product;
-import com.ecommerce.shop.Exceptions.ApiException;
 import com.ecommerce.shop.Exceptions.ResourceAlreadyExistsException;
 import com.ecommerce.shop.Exceptions.ResourceNotFoundException;
 import com.ecommerce.shop.Repositories.CategoryRepository;
 import com.ecommerce.shop.Repositories.ProductRepository;
-import com.ecommerce.shop.Requests.ProductRequestBody;
+import com.ecommerce.shop.DTO.RequestsDto.ProductRequestDto;
 import com.ecommerce.shop.Services.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -22,14 +21,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @Slf4j
@@ -145,7 +138,7 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public ProductDto addProduct(Long categoryId, ProductRequestBody productRequest) {
+    public ProductDto addProduct(Long categoryId, ProductRequestDto productRequest) {
         log.debug("Into addProduct service implementation");
 
         Category category = categoryRepository.findById(categoryId)
@@ -171,11 +164,11 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public ProductDto updateProduct(Long productId, ProductRequestBody productRequestBody) {
+    public ProductDto updateProduct(Long productId, ProductRequestDto productRequestDto) {
             Product productFromDb = productRepository.findById(productId)
                     .orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
 
-            Product product = modelMapper.map(productRequestBody, Product.class);
+            Product product = modelMapper.map(productRequestDto, Product.class);
 
             productFromDb.setProductName(product.getProductName());
             productFromDb.setDescription(product.getDescription());

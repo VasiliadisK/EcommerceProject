@@ -2,6 +2,7 @@ package com.ecommerce.shop.Entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,10 +28,15 @@ public class Product {
     @NotBlank
     @Size(min = 6, message = "Product description must contain atleast 6 characters")
     private String description;
+    @NotNull(message = "quantity is required")
     private Integer quantity;
+    @NotNull(message = "price is required")
     private double price;
+    @NotNull(message = "hasDiscount is required")
     private boolean hasDiscount;
+    @NotNull(message = "discount is required")
     private double discount;
+    @NotNull(message = "finalPrice is required")
     private double finalPrice;
     @ManyToOne
     @JoinColumn(name = "category_id")

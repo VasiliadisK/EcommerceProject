@@ -1,4 +1,4 @@
-package com.ecommerce.shop.Impl;
+package com.ecommerce.shop.Services.Impl;
 
 import com.ecommerce.shop.DTO.CategoryDto;
 import com.ecommerce.shop.DTO.ResponseDTOs.CategoryResponseDto;

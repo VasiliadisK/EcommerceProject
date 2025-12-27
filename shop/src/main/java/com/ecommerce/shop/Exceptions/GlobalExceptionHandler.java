@@ -29,4 +29,11 @@ public class GlobalExceptionHandler {
         ExceptionDto apiResponse = new ExceptionDto(message, HttpStatus.CONFLICT.value());
         return new ResponseEntity<>(apiResponse, HttpStatus.CONFLICT);
     }
+
+    @ExceptionHandler(WrongResourceProvidedException.class)
+    public ResponseEntity<ExceptionDto> myWrongResourceProvidedException(ResourceAlreadyExistsException e) {
+        String message = e.getMessage();
+        ExceptionDto apiResponse = new ExceptionDto(message, HttpStatus.BAD_REQUEST.value());
+        return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
+    }
 }

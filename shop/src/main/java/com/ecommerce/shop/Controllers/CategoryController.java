@@ -1,6 +1,6 @@
 package com.ecommerce.shop.Controllers;
 
-import com.ecommerce.shop.Constants.AppConstants;
+import com.ecommerce.shop.Config.AppConstants;
 import com.ecommerce.shop.DTO.CategoryDto;
 import com.ecommerce.shop.DTO.ResponseDTOs.CategoryResponseDto;
 import com.ecommerce.shop.DTO.RequestsDto.CategoryRequestDto;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/v1")
 public class CategoryController {
 
     private CategoryService categoryService;

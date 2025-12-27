@@ -1,6 +1,6 @@
 package com.ecommerce.shop.Controllers;
 
-import com.ecommerce.shop.Constants.AppConstants;
+import com.ecommerce.shop.Config.AppConstants;
 import com.ecommerce.shop.DTO.ProductDto;
 import com.ecommerce.shop.DTO.ResponseDTOs.ProductResponseDto;
 import com.ecommerce.shop.DTO.RequestsDto.ProductRequestDto;
@@ -16,7 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/v1")
 @Slf4j
 public class ProductController {
 

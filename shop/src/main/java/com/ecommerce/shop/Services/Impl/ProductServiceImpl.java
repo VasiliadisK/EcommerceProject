@@ -1,6 +1,6 @@
-package com.ecommerce.shop.Impl;
+package com.ecommerce.shop.Services.Impl;
 
-import com.ecommerce.shop.Constants.AppConstants;
+import com.ecommerce.shop.Config.AppConstants;
 import com.ecommerce.shop.DTO.ProductDto;
 import com.ecommerce.shop.DTO.ResponseDTOs.ProductResponseDto;
 import com.ecommerce.shop.Entities.Category;

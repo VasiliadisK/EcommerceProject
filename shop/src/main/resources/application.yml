@@ -1,6 +1,9 @@
 spring:
   application:
     name: shop
+  app:
+    jwtSecret: ${JWT_SECRET}
+    jwtExpirationInMs: ${JWT_EXPIRATION_MS:86400000}
   datasource:
     url: ${DATABASE_URL}
     username: ${DATABASE_USER}

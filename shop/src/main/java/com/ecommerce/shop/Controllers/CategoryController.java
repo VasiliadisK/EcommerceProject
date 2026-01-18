@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -46,7 +47,7 @@ public class CategoryController {
         CategoryDto categoryDto = categoryService.getCategoryById(categoryId);
         return new ResponseEntity<>(categoryDto, HttpStatus.OK);
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/admin/category")
     public ResponseEntity<CategoryDto> createCategory(@Valid @RequestBody CategoryRequestDto categoryRequestDto)
     {
@@ -55,7 +56,7 @@ public class CategoryController {
         CategoryDto categoryDto = categoryService.createNewCategory(categoryRequestDto);
         return new ResponseEntity<>(categoryDto, HttpStatus.OK);
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/admin/categories/{categoryId}")
     public ResponseEntity<CategoryDto> deleteCategory(@PathVariable Long categoryId){
         CategoryDto deletedCategory = categoryService.deleteCategory(categoryId);

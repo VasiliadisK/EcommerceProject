@@ -36,4 +36,11 @@ public class GlobalExceptionHandler {
         ExceptionDto apiResponse = new ExceptionDto(message, HttpStatus.BAD_REQUEST.value());
         return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(WrongRoleException.class)
+    public ResponseEntity<ExceptionDto> handleWrongRoleException(WrongRoleException e) {
+        String message = e.getMessage();
+        ExceptionDto errorResponse = new ExceptionDto(message, HttpStatus.FORBIDDEN.value());
+        return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
+    }
 }

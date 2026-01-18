@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,6 +23,7 @@ public class UserController
         this.userService = userService;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/admin/users")
     public ResponseEntity<UserResponseDto> getAllUsers(
             @RequestParam(name = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER, required = false) Integer pageNumber,
@@ -33,7 +35,7 @@ public class UserController
         UserResponseDto users = userService.getAllUsers(pageNumber, pageSize, sortBy, sortOrder);
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/admin/users/id/{userId}")
     public ResponseEntity<UserDto> getUserById(@PathVariable Long userId)
     {
@@ -41,7 +43,7 @@ public class UserController
         UserDto user = userService.getUserById(userId);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/admin/users/username")
     public ResponseEntity<UserDto> getUserByUsername(@RequestParam String username)
     {
@@ -49,7 +51,7 @@ public class UserController
         UserDto user = userService.getUserByUsername(username);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/admin/users")
     public ResponseEntity<UserDto> addUser(@Valid @RequestBody UserRequestDto userRequest)
     {
@@ -57,14 +59,14 @@ public class UserController
         UserDto user = userService.addUser(userRequest);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/admin/users/{userId}")
     public ResponseEntity<UserDto> updateUser(@Valid @RequestBody UserRequestDto userRequestDto,
                                                     @PathVariable Long userId){
         UserDto updatedUserDto = userService.updateUser(userId, userRequestDto);
         return new ResponseEntity<>(updatedUserDto, HttpStatus.OK);
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/admin/users/{userId}")
     public ResponseEntity<UserDto> deleteProduct(@PathVariable Long userId){
         UserDto deletedUser = userService.deleteUser(userId);

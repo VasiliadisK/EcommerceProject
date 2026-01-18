@@ -12,7 +12,10 @@ import lombok.NoArgsConstructor;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 
 @Entity
-@Table(name = "users")
+@Table(name = "users", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "userName"),
+        @UniqueConstraint(columnNames = "email")
+})
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

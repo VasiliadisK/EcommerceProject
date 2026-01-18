@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -69,7 +70,7 @@ public class ProductController {
         ProductDto productDto = productService.getProductById(productId);
         return new ResponseEntity<>(productDto, HttpStatus.OK);
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/admin/categories/{categoryId}/product")
     public ResponseEntity<ProductDto> AddProduct(@PathVariable Long categoryId, @Valid @RequestBody ProductRequestDto productRequest)
     {
@@ -79,14 +80,14 @@ public class ProductController {
         return new ResponseEntity<>(productDto, HttpStatus.CREATED);
 
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/admin/products/{productId}")
     public ResponseEntity<ProductDto> updateProduct(@Valid @RequestBody ProductRequestDto productRequestDto,
                                                     @PathVariable Long productId){
         ProductDto updatedProductDTO = productService.updateProduct(productId, productRequestDto);
         return new ResponseEntity<>(updatedProductDTO, HttpStatus.OK);
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/admin/products/{productId}")
     public ResponseEntity<ProductDto> deleteProduct(@PathVariable Long productId){
         ProductDto deletedProduct = productService.deleteProduct(productId);

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -80,6 +81,18 @@ public class ProductController {
         return new ResponseEntity<>(productDto, HttpStatus.CREATED);
 
     }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping("/admin/categories/{categoryId}/products")
+    public ResponseEntity<List<ProductDto>> AddMultipleProducts(@PathVariable Long categoryId, @Valid @RequestBody List<ProductRequestDto> productsRequest)
+    {
+        log.debug("into AddProductsToCategory controller");
+
+        List<ProductDto> productsDto = productService.addMultipleProducts(categoryId, productsRequest);
+        return new ResponseEntity<>(productsDto, HttpStatus.CREATED);
+
+    }
+
     @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/admin/products/{productId}")
     public ResponseEntity<ProductDto> updateProduct(@Valid @RequestBody ProductRequestDto productRequestDto,

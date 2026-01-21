@@ -22,7 +22,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -148,19 +151,58 @@ public class ProductServiceImpl implements ProductService{
             throw new ResourceAlreadyExistsException("Product", "name", productRequest.getProductName());
         }
 
+        Product productToAdd = getProductEntity(productRequest, category);
+        // I need to also be able to add multiple products at once
+        //hence the save is out of the get product method
+        Product addedProduct = productRepository.save(productToAdd);
+        log.info("Added product: {}", addedProduct);
+        return modelMapper.map(addedProduct, ProductDto.class);
+
+    }
+
+    @Override
+public List<ProductDto> addMultipleProducts(Long categoryId, List<ProductRequestDto> productsRequest) {
+    log.debug("Into addMultipleProducts service implementation");
+
+    Category category = categoryRepository.findById(categoryId)
+            .orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", categoryId));
+
+    List<String> productNames = productsRequest.stream()
+            .map(ProductRequestDto::getProductName)
+            .toList();
+
+    List<String> existingProductNames = productRepository
+            .findExistingProductsByName(productNames)
+            .stream()
+            .map(Product::getProductName)
+            .toList();
+
+    List<Product> productsToAdd = productsRequest.stream()
+            .filter(dto -> !existingProductNames.contains(dto.getProductName()))
+            .map(dto -> getProductEntity(dto, category))
+            .toList();
+
+    if (productsToAdd.isEmpty()) {
+        throw new ResourceAlreadyExistsException("Products", productNames);
+    }
+
+    List<Product> savedProducts = productRepository.saveAll(productsToAdd);
+    log.info("Added {} products: {}", savedProducts.size(),
+             savedProducts.stream().map(Product::getProductName).toList());
+
+    return savedProducts.stream()
+            .map(p -> modelMapper.map(p, ProductDto.class))
+            .toList();
+    }
+
+    private Product getProductEntity(ProductRequestDto productRequest, Category category) {
         Product productToAdd = modelMapper.map(productRequest, Product.class);
         productToAdd.setCategory(category);
-
-        System.out.println(productToAdd);
-
         if (productToAdd.isHasDiscount())
             productToAdd.setFinalPrice(calculateFinalPriceForProduct(productToAdd.getPrice(), productToAdd.getDiscount()));
         else
             productToAdd.setFinalPrice(productToAdd.getPrice());
-
-        Product addedProduct = productRepository.save(productToAdd);
-        return modelMapper.map(addedProduct, ProductDto.class);
-
+        return productToAdd;
     }
 
     @Override

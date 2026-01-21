@@ -18,4 +18,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     Page<Product> findAllByCategory(@Param("categoryId") Long categoryId, Pageable pageable);
 
     boolean existsByProductName(String productName);
+
+    @Query("SELECT p FROM Product p WHERE p.productName IN :productNames")
+    List<Product> findExistingProductsByName(@Param("productNames") List<String> productNames);
 }

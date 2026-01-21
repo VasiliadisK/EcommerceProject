@@ -1,5 +1,7 @@
 package com.ecommerce.shop.Exceptions;
 
+import java.util.List;
+
 public class ResourceAlreadyExistsException extends RuntimeException {
 
     String resourceName;
@@ -8,7 +10,7 @@ public class ResourceAlreadyExistsException extends RuntimeException {
     Long fieldId;
 
     public ResourceAlreadyExistsException(String resourceName){
-        super(String.format("%s already exist"));
+        super(String.format("%s already exist", resourceName));
     }
     public ResourceAlreadyExistsException(String resourceName, String field, String fieldName) {
         super(String.format("%s with %s: %s already exists", resourceName, field, fieldName));
@@ -24,4 +26,9 @@ public class ResourceAlreadyExistsException extends RuntimeException {
         this.fieldId = fieldId;
     }
 
+    public ResourceAlreadyExistsException(String resourceName, List<String> fieldNames) {
+        super(String.format("All %s already exist: %s",
+                resourceName,
+                String.join(", ", fieldNames)));
+    }
 }

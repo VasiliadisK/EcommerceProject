@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 public interface ProductService {
     ProductResponseDto getAllProducts(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder);
@@ -24,4 +25,6 @@ public interface ProductService {
     ProductDto deleteProduct(Long productId);
 
     ProductDto updateProductImage(Long productId, MultipartFile image) throws IOException;
+
+    List<ProductDto> addMultipleProducts(Long categoryId, @Valid List<ProductRequestDto> productsRequest);
 }

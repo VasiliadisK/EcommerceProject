@@ -53,7 +53,9 @@ public class AuthController {
 
     @PostMapping("/signin")
     public ResponseEntity<?> signIn(@Valid @RequestBody LoginRequestDto loginRequestDto)
-    { log.debug("Inside signin controller with login request {}", loginRequestDto);
+    {
+        log.debug("Inside signin controller with login request {}", loginRequestDto);
+
         Authentication authentication;
         try{
             authentication = authenticationManager.authenticate(
@@ -93,6 +95,8 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody UserSignupRequestDto userSignupRequestDto)
     {
+        log.debug("Inside registerUser controller with register request {}", userSignupRequestDto);
+
         if(userRepository.existsByUserName(userSignupRequestDto.getUsername()))
         {
             ExceptionDto errorResponse = new ExceptionDto();
@@ -148,6 +152,7 @@ public class AuthController {
     @GetMapping("/LoggedInUsername")
     public String getCurrentUsername(Authentication authentication) {
 
+        log.debug("Inside getCurrentUsername controller");
 
         if(authentication != null)
         {
@@ -162,6 +167,8 @@ public class AuthController {
 
     @GetMapping("/LoggedInUser")
     public ResponseEntity<UserDto> getCurrentUser(Authentication authentication) {
+
+        log.debug("Inside getCurrentUser controller");
 
         if(authentication == null) {
             throw new NullPointerException("Authentication is null. User might not be logged in.");
@@ -190,6 +197,8 @@ public class AuthController {
 
     @PostMapping("/signout")
     public ResponseEntity<?> signoutUser(){
+        log.debug("Inside signoutUser controller");
+
         ResponseCookie cookie = jwtUtils.getCleanJwtCookie();
         return ResponseEntity
                 .ok()

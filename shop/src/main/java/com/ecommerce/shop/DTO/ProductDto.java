@@ -13,9 +13,10 @@ public class ProductDto {
     private String productName;
     private String image;
     private String description;
-    private Integer quantity;
+    private Integer availableQuantity;
     private double price;
     private boolean hasDiscount;
     private double discount;
     private double finalPrice;
+    private Integer requestedQuantity;
 }

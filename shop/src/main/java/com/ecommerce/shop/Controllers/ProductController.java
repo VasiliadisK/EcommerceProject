@@ -97,19 +97,26 @@ public class ProductController {
     @PutMapping("/admin/products/{productId}")
     public ResponseEntity<ProductDto> updateProduct(@Valid @RequestBody ProductRequestDto productRequestDto,
                                                     @PathVariable Long productId){
+        log.debug("into updateProduct controller");
+
         ProductDto updatedProductDTO = productService.updateProduct(productId, productRequestDto);
         return new ResponseEntity<>(updatedProductDTO, HttpStatus.OK);
     }
+
     @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/admin/products/{productId}")
     public ResponseEntity<ProductDto> deleteProduct(@PathVariable Long productId){
+        log.debug("into deleteProduct controller");
+
         ProductDto deletedProduct = productService.deleteProduct(productId);
         return new ResponseEntity<>(deletedProduct, HttpStatus.OK);
     }
 
-    @PutMapping("/products/{productId}/image")
+    @PutMapping("/admin/products/{productId}/image")
     public ResponseEntity<ProductDto> updateProductImage(@PathVariable Long productId,
                                                          @RequestParam(name = "image") MultipartFile image) throws IOException {
+        log.debug("into updateProductImage controller");
+
         ProductDto updatedProduct = productService.updateProductImage(productId, image);
         return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
     }

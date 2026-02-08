@@ -5,10 +5,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 
 @Entity
@@ -59,4 +56,8 @@ public class User {
     @NotBlank(message = "role is required")
     @Column(name = "role")
     private String role;
+
+    @ToString.Exclude
+    @OneToOne(mappedBy = "user", cascade = { CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    private Cart cart;
 }

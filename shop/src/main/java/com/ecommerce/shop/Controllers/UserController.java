@@ -63,12 +63,16 @@ public class UserController
     @PutMapping("/admin/users/{userId}")
     public ResponseEntity<UserDto> updateUser(@Valid @RequestBody UserRequestDto userRequestDto,
                                                     @PathVariable Long userId){
+        log.debug("Inside updateUser controller for user  {}", userRequestDto.getUserName());
+
         UserDto updatedUserDto = userService.updateUser(userId, userRequestDto);
         return new ResponseEntity<>(updatedUserDto, HttpStatus.OK);
     }
     @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/admin/users/{userId}")
     public ResponseEntity<UserDto> deleteProduct(@PathVariable Long userId){
+        log.debug("Inside deleteProduct controller for user  {}", userId);
+
         UserDto deletedUser = userService.deleteUser(userId);
         return new ResponseEntity<>(deletedUser, HttpStatus.OK);
     }

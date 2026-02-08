@@ -16,7 +16,7 @@ public class ProductRequestDto {
     @NotBlank(message = "description is required")
     private String description;
     @NotNull(message = "quantity is required")
-    private Integer quantity;
+    private Integer availableQuantity;
     @NotNull(message = "price is required")
     private double price;
     @NotNull(message = "hasDiscount is required")

@@ -3,10 +3,14 @@ package com.ecommerce.shop.Services.Impl;
 import com.ecommerce.shop.Config.AppConstants;
 import com.ecommerce.shop.DTO.ProductDto;
 import com.ecommerce.shop.DTO.ResponseDTOs.ProductResponseDto;
+import com.ecommerce.shop.Entities.Cart;
+import com.ecommerce.shop.Entities.CartProduct;
 import com.ecommerce.shop.Entities.Category;
 import com.ecommerce.shop.Entities.Product;
 import com.ecommerce.shop.Exceptions.ResourceAlreadyExistsException;
 import com.ecommerce.shop.Exceptions.ResourceNotFoundException;
+import com.ecommerce.shop.Repositories.CartProductRepository;
+import com.ecommerce.shop.Repositories.CartRepository;
 import com.ecommerce.shop.Repositories.CategoryRepository;
 import com.ecommerce.shop.Repositories.ProductRepository;
 import com.ecommerce.shop.DTO.RequestsDto.ProductRequestDto;
@@ -22,10 +26,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Objects;
+
+import static com.ecommerce.shop.util.productsUtil.calculateFinalPriceForProduct;
+
 
 @Service
 @Slf4j
@@ -35,14 +40,18 @@ public class ProductServiceImpl implements ProductService{
     private final ModelMapper modelMapper;
     private final CategoryRepository categoryRepository;
     private final FileServiceImpl fileServiceImpl;
+    private final CartRepository cartRepository;
+    private final CartProductRepository cartProductRepository;
 
     @Autowired
-    public ProductServiceImpl(ProductRepository productRepository, ModelMapper modelMapper, CategoryRepository categoryRepository, FileServiceImpl fileServiceImpl)
+    public ProductServiceImpl(ProductRepository productRepository, ModelMapper modelMapper, CategoryRepository categoryRepository, FileServiceImpl fileServiceImpl, CartProductRepository cartProductRepository, CartRepository cartRepository, CartProductRepository cartProductRepository1)
     {
         this.productRepository = productRepository;
         this.modelMapper = modelMapper;
         this.categoryRepository = categoryRepository;
         this.fileServiceImpl = fileServiceImpl;
+        this.cartRepository = cartRepository;
+        this.cartProductRepository = cartProductRepository1;
     }
 
 
@@ -161,38 +170,38 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-public List<ProductDto> addMultipleProducts(Long categoryId, List<ProductRequestDto> productsRequest) {
-    log.debug("Into addMultipleProducts service implementation");
+    public List<ProductDto> addMultipleProducts(Long categoryId, List<ProductRequestDto> productsRequest) {
+        log.debug("Into addMultipleProducts service implementation");
 
-    Category category = categoryRepository.findById(categoryId)
-            .orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", categoryId));
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", categoryId));
 
-    List<String> productNames = productsRequest.stream()
-            .map(ProductRequestDto::getProductName)
-            .toList();
+        List<String> productNames = productsRequest.stream()
+                .map(ProductRequestDto::getProductName)
+                .toList();
 
-    List<String> existingProductNames = productRepository
-            .findExistingProductsByName(productNames)
-            .stream()
-            .map(Product::getProductName)
-            .toList();
+        List<String> existingProductNames = productRepository
+                .findExistingProductsByName(productNames)
+                .stream()
+                .map(Product::getProductName)
+                .toList();
 
-    List<Product> productsToAdd = productsRequest.stream()
-            .filter(dto -> !existingProductNames.contains(dto.getProductName()))
-            .map(dto -> getProductEntity(dto, category))
-            .toList();
+        List<Product> productsToAdd = productsRequest.stream()
+                .filter(dto -> !existingProductNames.contains(dto.getProductName()))
+                .map(dto -> getProductEntity(dto, category))
+                .toList();
 
-    if (productsToAdd.isEmpty()) {
-        throw new ResourceAlreadyExistsException("Products", productNames);
-    }
+        if (productsToAdd.isEmpty()) {
+            throw new ResourceAlreadyExistsException("Products", productNames);
+        }
 
-    List<Product> savedProducts = productRepository.saveAll(productsToAdd);
-    log.info("Added {} products: {}", savedProducts.size(),
-             savedProducts.stream().map(Product::getProductName).toList());
+        List<Product> savedProducts = productRepository.saveAll(productsToAdd);
+        log.info("Added {} products: {}", savedProducts.size(),
+                 savedProducts.stream().map(Product::getProductName).toList());
 
-    return savedProducts.stream()
-            .map(p -> modelMapper.map(p, ProductDto.class))
-            .toList();
+        return savedProducts.stream()
+                .map(p -> modelMapper.map(p, ProductDto.class))
+                .toList();
     }
 
     private Product getProductEntity(ProductRequestDto productRequest, Category category) {
@@ -207,23 +216,50 @@ public List<ProductDto> addMultipleProducts(Long categoryId, List<ProductRequest
 
     @Override
     public ProductDto updateProduct(Long productId, ProductRequestDto productRequestDto) {
-            Product productFromDb = productRepository.findById(productId)
-                    .orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
+        Product productFromDb = productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
 
-            Product product = modelMapper.map(productRequestDto, Product.class);
+        Product product = modelMapper.map(productRequestDto, Product.class);
 
-            productFromDb.setProductName(product.getProductName());
-            productFromDb.setDescription(product.getDescription());
-            productFromDb.setQuantity(product.getQuantity());
-            productFromDb.setHasDiscount(product.isHasDiscount());
-            productFromDb.setDiscount(product.getDiscount());
-            productFromDb.setPrice(product.getPrice());
-            productFromDb.setFinalPrice(product.getFinalPrice());
+        productFromDb.setProductName(product.getProductName());
+        productFromDb.setDescription(product.getDescription());
+        productFromDb.setAvailableQuantity(product.getAvailableQuantity());
+        productFromDb.setHasDiscount(product.isHasDiscount());
+        productFromDb.setDiscount(product.getDiscount());
+        productFromDb.setPrice(product.getPrice());
+        if(productFromDb.isHasDiscount())
+            productFromDb.setFinalPrice(calculateFinalPriceForProduct(productFromDb.getPrice(), productFromDb.getDiscount()));
+        else
+            productFromDb.setFinalPrice(productFromDb.getPrice());
+        Product savedProduct = productRepository.save(productFromDb);
 
-            Product savedProduct = productRepository.save(productFromDb);
+        List<CartProduct> cartProducts = cartProductRepository
+            .findAllByProductId(productId);
+        if (!cartProducts.isEmpty()) {
+            cartProducts.forEach(cp -> {
+                cp.setProductPrice(productFromDb.getFinalPrice());
+                cp.setProduct(productFromDb);
+                cp.setDiscount(productFromDb.getDiscount());
+            });
+            cartProductRepository.saveAll(cartProducts);
 
-            return modelMapper.map(savedProduct, ProductDto.class);
+            List<Cart> affectedCarts = cartProducts.stream()
+                    .map(CartProduct::getCart)
+                    .toList();
+            affectedCarts.forEach(this::recalculateTotalPriceOfCart);
+        }
+        return modelMapper.map(savedProduct, ProductDto.class);
     }
+
+    private void recalculateTotalPriceOfCart(Cart cart) {
+        log.debug("Into recalculateTotalPriceOfCart for cart id {}",cart.getCartId());
+        double totalPrice = cart.getCartItems().stream()
+                .mapToDouble(cp -> cp.getRequestedQuantity() * cp.getProductPrice())
+                .sum();
+        cart.setTotalPrice(totalPrice);
+        cartRepository.save(cart);
+    }
+
 
     @Override
     public ProductDto deleteProduct(Long productId) {
@@ -242,9 +278,5 @@ public List<ProductDto> addMultipleProducts(Long categoryId, List<ProductRequest
         product.setImage(filename);
         Product savedProduct = productRepository.save(product);
         return modelMapper.map(savedProduct, ProductDto.class);
-    }
-
-    private double calculateFinalPriceForProduct(double price, double discount) {
-        return price - ((discount * 0.01) * price);
     }
 }

@@ -114,8 +114,6 @@ public class UserServiceImpl implements UserService {
         userEntity.setLastName(userRequestDto.getLastName());
         userEntity.setUserName(userRequestDto.getUserName());
         userEntity.setEmail(userRequestDto.getEmail());
-//        userEntity.setPassword(passwordEncoder.encode(userRequestDto.getPassword()));
-        //TEMPORARY SHOULD BE ADAPTED TO HASH PASSWORD
         userEntity.setPassword(userRequestDto.getPassword());
         userEntity.setAddress(userRequestDto.getAddress());
         if(userRequestDto.getRole() != null) {

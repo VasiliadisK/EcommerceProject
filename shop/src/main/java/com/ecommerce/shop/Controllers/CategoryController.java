@@ -59,14 +59,20 @@ public class CategoryController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/admin/categories/{categoryId}")
     public ResponseEntity<CategoryDto> deleteCategory(@PathVariable Long categoryId){
+
+        log.debug("Into deleteCategory controller with categoryId {}", categoryId);
+
         CategoryDto deletedCategory = categoryService.deleteCategory(categoryId);
         return new ResponseEntity<>(deletedCategory, HttpStatus.OK);
     }
 
-
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/admin/categories/{categoryId}")
     public ResponseEntity<CategoryDto> updateCategory(@Valid @RequestBody CategoryDto categoryDTO,
                                                       @PathVariable Long categoryId){
+
+        log.debug("Into updateCategory controller with categoryId {}", categoryId);
+
         CategoryDto savedCategoryDTO = categoryService.updateCategory(categoryDTO, categoryId);
         return new ResponseEntity<>(savedCategoryDTO, HttpStatus.OK);
     }

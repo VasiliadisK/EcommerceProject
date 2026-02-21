@@ -207,10 +207,7 @@ public class ProductServiceImpl implements ProductService{
     private Product getProductEntity(ProductRequestDto productRequest, Category category) {
         Product productToAdd = modelMapper.map(productRequest, Product.class);
         productToAdd.setCategory(category);
-        if (productToAdd.isHasDiscount())
-            productToAdd.setFinalPrice(calculateFinalPriceForProduct(productToAdd.getPrice(), productToAdd.getDiscount()));
-        else
-            productToAdd.setFinalPrice(productToAdd.getPrice());
+        productToAdd.setFinalPrice(calculateFinalPriceForProduct(productToAdd.getPrice(), productToAdd.getDiscount()));
         return productToAdd;
     }
 

@@ -76,7 +76,6 @@ public class CartServiceImpl implements CartService {
         }
 
 
-        product.setAvailableQuantity(product.getAvailableQuantity()-requestedQuantity);
         cart.setTotalPrice(cart.getTotalPrice() + (product.getFinalPrice() * requestedQuantity));
 
         cartRepository.save(cart);
@@ -170,7 +169,6 @@ public class CartServiceImpl implements CartService {
                     + " less than or equal to the available quantity " + product.getAvailableQuantity() + ".");
         }
 
-        product.setAvailableQuantity(product.getAvailableQuantity() - quantity);
         productRepository.save(product);
         userCart.setTotalPrice(userCart.getTotalPrice() + (cartProduct.getProductPrice()*quantity));
 
@@ -196,7 +194,6 @@ public class CartServiceImpl implements CartService {
             throw new ResourceNotFoundException("cartProcut","productId",productId);
 
         dbCart.setTotalPrice(dbCart.getTotalPrice() - (dbCartProduct.getProductPrice()*dbCartProduct.getRequestedQuantity()));
-        dbProduct.setAvailableQuantity(dbProduct.getAvailableQuantity() + dbCartProduct.getRequestedQuantity());
         dbCart.getCartItems().removeIf(cp -> Objects.equals(cp.getCartProductId(), dbCartProduct.getCartProductId()));
         cartRepository.save(dbCart);
         cartProductRepository.deleteByCartProductId(dbCartProduct.getCartProductId());

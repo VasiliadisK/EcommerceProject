@@ -7,10 +7,24 @@ public class AppEnums {
         USER
     }
 
+    public enum OrderStatus {
+        PREPARING,
+        SHIPPING,
+        COMPLETED,
+        REFUNDED,
+        CANCELLED
+    }
+
     public enum PaymentStatus {
         PENDING,
         COMPLETED,
         FAILED
+    }
+
+    public enum PaymentMethod {
+        STRIPE,
+        PAYPAL,
+        CARD
     }
 
 }

@@ -54,6 +54,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = new Order();
         order.setUserId(user.getUserId());
         order.setEmail(user.getEmail());
+        order.setAddress(user.getAddress());
         order.setOrderDate(LocalDate.now());
         order.setTotalAmount(userCart.getTotalPrice());
         order.setOrderStatus(OrderStatus.PREPARING);

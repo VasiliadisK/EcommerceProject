@@ -26,6 +26,9 @@ public class Order {
     @Column(nullable = false)
     private String email;
 
+    @Column(name = "address", nullable = false)
+    private String address;
+
     @Column(name = "order_status")
     private OrderStatus orderStatus;
 

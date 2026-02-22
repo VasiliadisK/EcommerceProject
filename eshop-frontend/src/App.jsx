@@ -1,11 +1,12 @@
 import './App.css'
-import Header from './components/Header'
+import CarouselSwiper from './components/CarouselSwiper'
+import Home from './pages/Home'
 
 function App() {
 
   return (
     <>
-      <Header/>
+      <Home/>
     </>
   )
 }

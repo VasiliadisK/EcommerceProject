@@ -1,15 +1,15 @@
-import bannerImg1 from '../assets/images/bannerImg1.jpeg'
-import bannerImg2 from '../assets/images/bannerImg2.jpeg'
-import bannerImg3 from '../assets/images/bannerImg3.jpeg'
-import bannerImg4 from '../assets/images/bannerImg4.jpeg'
-import bannerImg5 from '../assets/images/bannerImg5.jpg'
+import bannerImg1 from '../assets/images/home/bannerImg1.jpeg'
+import bannerImg2 from '../assets/images/home/bannerImg2.jpeg'
+import bannerImg3 from '../assets/images/home/bannerImg3.jpeg'
+import bannerImg4 from '../assets/images/home/bannerImg4.jpeg'
+import bannerImg5 from '../assets/images/home/bannerImg5.jpg'
 
-export const carouselSlides = [
+export const carouselHomeSlides = [
     {
         id: 1,
         image: bannerImg1,
-        title: "ΤΟ ΦΥΣΙΚΟ ΜΑΣ ΚΑΤΑΣΤΗΜΑ ΑΝΟΙΞΕ",
-        subtitle: "ΚΟΜΝΗΝΩΝ 17, 7ΟΣ, ΚΕΝΤΡΟ ΘΕΣΣΑΛΟΝΙΚΗΣ",
+        title: "Το φυσικό μας κατάστημα άνοιξε",
+        subtitle: "Κομνηνών 17, 7ος, κέντρο Θεσσαλονίκης",
         buttonText: "ΩΡΑΡΙΟ",
         position: "center 40%",
         redirection: "/contact"

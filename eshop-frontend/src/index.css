@@ -9,3 +9,48 @@
   --font-sans: 'Poppins', sans-serif;
   --font-display: 'Playfair Display', serif;
 }
+
+#modal {
+    position: relative;
+    z-index: 9999;
+}
+
+.modal {
+    font-family: var(--font-sans);
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--color-brand);
+    border: none;
+    border-radius: 12px;
+    padding: 2rem;
+    z-index: 9999;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    width: 90%;
+    opacity: 0;
+    max-width: 560px;   
+    animation: modal-slide-in 0.3s ease forwards;
+}
+
+@keyframes modal-slide-in {
+    from {
+        opacity: 0;
+        top: 45%;
+    }
+    to {
+        opacity: 1;
+        top: 50%;
+    }
+}
+
+.modal::backdrop {
+    background-color: rgba(0, 0, 0, 0);
+    animation: backdrop-fade-in 0.3s ease forwards;
+}
+
+@keyframes backdrop-fade-in {
+    to {
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+}

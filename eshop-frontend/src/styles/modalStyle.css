@@ -1,0 +1,76 @@
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.cart-modal-overlay {
+  animation: fadeIn 0.2s ease-out;
+}
+
+.cart-modal-content {
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.cart-modal-overlay {
+  animation: fadeIn 0.2s ease-out;
+}
+
+.cart-modal-content {
+  animation: slideUp 0.3s ease-out;
+}
+
+.btn-press {
+  transition: all 0.1s ease;
+}
+
+.btn-press:active {
+  transform: scale(0.95);
+  filter: brightness(0.9);
+}
+
+.btn-press-yellow:active {
+  background-color: #eab308;
+}
+
+.btn-press-stone:active {
+  background-color: #292524;
+}
+
+.btn-press-red:active {
+  background-color: #b91c1c;
+}

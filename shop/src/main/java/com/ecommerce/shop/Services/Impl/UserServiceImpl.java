@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -116,6 +117,9 @@ public class UserServiceImpl implements UserService {
         userEntity.setEmail(userRequestDto.getEmail());
         userEntity.setPassword(userRequestDto.getPassword());
         userEntity.setAddress(userRequestDto.getAddress());
+        userEntity.setPhoneNumber(userRequestDto.getPhoneNumber());
+        userEntity.setPostalCode(userRequestDto.getPostalCode());
+        userEntity.setCity(userRequestDto.getCity());
         if(userRequestDto.getRole() != null) {
             if(AppEnums.UserRole.USER.toString().equalsIgnoreCase(userRequestDto.getRole())) {
                 userEntity.setRole(AppEnums.UserRole.USER.toString());

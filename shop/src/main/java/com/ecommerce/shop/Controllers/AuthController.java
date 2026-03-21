@@ -3,11 +3,13 @@ package com.ecommerce.shop.Controllers;
 import com.ecommerce.shop.Config.AppEnums;
 import com.ecommerce.shop.DTO.ExceptionDto;
 import com.ecommerce.shop.DTO.MessageDto;
+import com.ecommerce.shop.DTO.PasswordChangeDto;
 import com.ecommerce.shop.DTO.RequestsDto.LoginRequestDto;
 import com.ecommerce.shop.DTO.RequestsDto.UserSignupRequestDto;
 import com.ecommerce.shop.DTO.ResponseDTOs.LoginResponseDto;
 import com.ecommerce.shop.DTO.UserDto;
 import com.ecommerce.shop.Entities.User;
+import com.ecommerce.shop.Exceptions.ApiException;
 import com.ecommerce.shop.Exceptions.WrongRoleException;
 import com.ecommerce.shop.Repositories.UserRepository;
 import com.ecommerce.shop.security.jwt.JwtUtils;
@@ -118,10 +120,13 @@ public class AuthController {
         User user = User.builder()
                 .userName(userSignupRequestDto.getUsername())
                 .email(userSignupRequestDto.getEmail())
-                .firstName(userSignupRequestDto.getFirstName())
-                .lastName(userSignupRequestDto.getLastName())
+                .firstName(userSignupRequestDto.getFirstname())
+                .lastName(userSignupRequestDto.getLastname())
                 .password(passwordEncoder.encode(userSignupRequestDto.getPassword()))
                 .address(userSignupRequestDto.getAddress())
+                .city(userSignupRequestDto.getCity())
+                .postalCode(userSignupRequestDto.getPostalCode())
+                .phoneNumber(userSignupRequestDto.getPhoneNumber())
                 .build();
 
         String role = userSignupRequestDto.getRole();
@@ -187,12 +192,34 @@ public class AuthController {
         userDto.setFirstName(userEntity.getFirstName());
         userDto.setLastName(userEntity.getLastName());
         userDto.setAddress(userEntity.getAddress());
+        userDto.setCity(userEntity.getCity());
+        userDto.setPostalCode(userEntity.getPostalCode());
+        userDto.setPhoneNumber(userEntity.getPhoneNumber());
         userDto.setRole(userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .findFirst() // We only expect one role for the user
                 .orElse(null));
 
         return new ResponseEntity<>(userDto, HttpStatus.OK);
+    }
+
+    @PostMapping("/changeLoggedInUserPassword")
+    public ResponseEntity<String> changeLoggedInUserPassword(Authentication authentication, @RequestBody PasswordChangeDto passwordChangeDto) {
+        log.debug("Inside changeLoggedInUserPassword controller");
+        if(authentication == null) throw new NullPointerException("Authentication is null.");
+
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        if(!passwordEncoder.matches(passwordChangeDto.getCurrentPassword(), userDetails.getPassword())) {
+            return ResponseEntity.badRequest().body("Current password is incorrect");
+        }
+
+        userRepository.updatePasswordByUsername(
+                userDetails.getUsername(),
+                passwordEncoder.encode(passwordChangeDto.getNewPassword())
+        );
+
+        return ResponseEntity.ok("User password changed successfully!");
     }
 
     @PostMapping("/signout")

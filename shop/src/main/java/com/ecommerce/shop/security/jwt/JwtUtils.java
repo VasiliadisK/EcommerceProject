@@ -66,6 +66,7 @@ public class JwtUtils {
         log.debug("Inside getCleanJwtCookie method");
         return ResponseCookie.from(jwtCookie, null)
                 .path("/api")
+                .maxAge(0)
                 .build();
     }
 

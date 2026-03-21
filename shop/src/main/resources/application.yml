@@ -24,4 +24,4 @@ logging:
     org.hibernate: INFO
 app:
   cors:
-    allowed-origins: https://ubiquitous-couscous-7559x9w9j6vhxv6w-5173.app.github.dev
+    allowed-origins: http://localhost:5173/

@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 
 @Entity
 @Table(name = "users", uniqueConstraints = {
@@ -53,7 +52,18 @@ public class User {
     @Column(name = "address")
     private String address;
 
-    @NotBlank(message = "role is required")
+    @NotBlank(message = "City cannot be null")
+    @Column(name = "city")
+    private String city;
+
+    @NotBlank(message = "Postal code cannot be null")
+    @Column(name = "postalCode")
+    private String postalCode;
+
+    @NotBlank(message = "Phone number cannot be null")
+    @Column(name = "phoneNumber")
+    private String phoneNumber;
+
     @Column(name = "role")
     private String role;
 

@@ -4,6 +4,7 @@ import com.ecommerce.shop.DTO.RequestsDto.UserRequestDto;
 import com.ecommerce.shop.DTO.ResponseDTOs.UserResponseDto;
 import com.ecommerce.shop.DTO.UserDto;
 import jakarta.validation.Valid;
+import org.springframework.security.core.Authentication;
 
 public interface UserService {
     UserResponseDto getAllUsers(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder);

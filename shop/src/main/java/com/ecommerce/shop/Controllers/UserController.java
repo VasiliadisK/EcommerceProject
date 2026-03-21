@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -59,10 +60,9 @@ public class UserController
         UserDto user = userService.addUser(userRequest);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @PutMapping("/admin/users/{userId}")
+    @PutMapping("/users/{userId}")
     public ResponseEntity<UserDto> updateUser(@Valid @RequestBody UserRequestDto userRequestDto,
-                                                    @PathVariable Long userId){
+                                              @PathVariable Long userId){
         log.debug("Inside updateUser controller for user  {}", userRequestDto.getUserName());
 
         UserDto updatedUserDto = userService.updateUser(userId, userRequestDto);

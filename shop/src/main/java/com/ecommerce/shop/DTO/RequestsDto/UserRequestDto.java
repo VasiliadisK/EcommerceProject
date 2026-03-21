@@ -30,6 +30,12 @@ public class UserRequestDto {
     private String password;
     @NotBlank(message = "address is required")
     private String address;
+    @NotBlank(message = "city is required")
+    private String city;
+    @NotBlank(message = "phone number is required")
+    private String phoneNumber;
+    @NotBlank(message = "postal code is required")
+    private String postalCode;
     //can be blank and in that case will get a default value from service layer
     private String role;
 }

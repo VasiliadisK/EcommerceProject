@@ -1,10 +1,7 @@
 package com.ecommerce.shop.DTO.RequestsDto;
 
 import jakarta.persistence.Column;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,12 +14,12 @@ public class UserSignupRequestDto {
     @NotNull(message = "First name cannot be null")
     @Size(max = 30, message = "First name must be up to 30 characters")
     @Column(name = "first_name", nullable = false)
-    private String firstName;
+    private String firstname;
 
     @NotNull(message = "Last name cannot be null")
     @Size(max = 30, message = "Last name must be up to 30 characters")
     @Column(name = "last_name", nullable = false)
-    private String lastName;
+    private String lastname;
 
     @Email
     @NotNull(message = "Email cannot be null")
@@ -42,7 +39,15 @@ public class UserSignupRequestDto {
     @Column(name = "address", nullable = false)
     private String address;
 
-    @NotNull(message = "Role cannot be null")
+    @NotBlank(message = "City cannot be null")
+    private String city;
+
+    @NotBlank(message = "Postal code cannot be null")
+    private String postalCode;
+
+    @NotBlank(message = "Phone number cannot be null")
+    private String phoneNumber;
+
     @Column(name = "role", nullable = false)
     private String role;
 

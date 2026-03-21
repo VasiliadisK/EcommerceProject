@@ -1,7 +1,5 @@
 import api from './axiosInstance';
-import { QueryClient } from '@tanstack/react-query';
 
-export const queryClient = new QueryClient();
 
 export const login = (credentials) =>
   api.post('/auth/signin', credentials);
@@ -11,3 +9,9 @@ export const register = (userData) =>
 
 export const logout = () =>
   api.post('/auth/signout');
+
+export const getLoggedInUser = () => 
+  api.get('/auth/LoggedInUser');
+
+export const updatePasswordOfLoggedInUser = (data) => 
+  api.post('/auth/changeLoggedInUserPassword',data)

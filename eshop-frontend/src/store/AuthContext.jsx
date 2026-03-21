@@ -1,34 +1,48 @@
-import { createContext, useState } from "react";
+import { createContext } from "react";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { getLoggedInUser, logout as logoutRequest } from "../http/authRequests";
+import { queryClient } from "../http/queryClient";
 
-export const AuthContext = createContext({
-  loggedInUsername: null,
-  loggedInRole: null,
-  isAdmin: () => {},
-  isLoggedIn: () => {},
-  login: () => {},
-  logout: () => {},
-});
+import Spinner from "../components/sharedComponents/utilComponents/Spinner";
+
+export const AuthContext = createContext();
 
 export function AuthContextProvider({ children }) {
-    const [loggedInUser, setLoggedInUser] = useState(null);
+  const { data, isLoading } = useQuery({
+    queryKey: ["loggedInUser"],
+    queryFn: () => {
+      return getLoggedInUser();
+    },
+    retry: false,
+  });
 
-    const login = (userData) => setLoggedInUser(userData);
-    const logout = () => setLoggedInUser(null);
+  const loggedInUser = data?.data ?? null;
+  console.log(loggedInUser);
 
-    const isAdmin = () => loggedInUser?.roles?.includes('ADMIN');
-    const isLoggedIn = () => loggedInUser !== null;
-
-    const authContext = {
-        loggedInUsername: loggedInUser?.username,
-        loggedInRole: loggedInUser?.roles[0],
-        isAdmin: isAdmin,
-        isLoggedIn: isLoggedIn,
-        login: login,
-        logout: logout,
+  const login = (userData) => {
+    queryClient.setQueryData(["loggedInUser"], { data: userData });
   };
-    return (
-        <AuthContext.Provider value={authContext}>
-            {children}
-        </AuthContext.Provider>
-    );
+
+  const { mutate: logout } = useMutation({
+    mutationFn: logoutRequest,
+    onSuccess: () => {
+      queryClient.setQueryData(["loggedInUser"], null);
+    },
+  });
+
+  const authContext = {
+    loggedInUser,
+    loggedInUsername: loggedInUser?.userName,
+    loggedInRole: loggedInUser?.role,
+    isAdmin: () => loggedInUser?.role === "ADMIN",
+    isLoggedIn: loggedInUser !== null,
+    login,
+    logout,
+  };
+
+  return (
+    <AuthContext.Provider value={authContext}>
+      {isLoading ? <Spinner /> : children}
+    </AuthContext.Provider>
+  );
 }

@@ -1,20 +1,20 @@
 import Modal from "../utilComponents/Modal";
 import { ModalContext } from "../../../store/ModalContext";
-import { AuthContext } from "../../../store/AuthContext";
 import { useContext } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import FormTextInput from "../utilComponents/FormTextInput";
 import FormPasswordInput from "../utilComponents/FormPasswordInput";
 import { useMutation } from "@tanstack/react-query";
 import { login } from "../../../http/authRequests";
+import { queryClient } from "../../../http/queryClient";
 import Spinner from "../utilComponents/Spinner";
 import ErrorBlock from "../utilComponents/ErrorBlock";
+import toast from "react-hot-toast";
 
 export default function LoginInfoForModal() {
   const { isLoginModalOpen, closeModal, openRegisterModal } =
     useContext(ModalContext);
 
-  const { login:setLoggedInUser, loggedInUsername} = useContext(AuthContext);
   const methods = useForm();
 
   function handleCloseModal() {
@@ -30,16 +30,18 @@ export default function LoginInfoForModal() {
     error,
   } = useMutation({
     mutationFn: (credentials) => login(credentials),
-    onSuccess: () => {
-      setLoggedInUser ({
-        username: data.data.username,
-        roles: [data.data.role],
-      });
-      console.log("Login successful for user "+data.data.username);
+    onSuccess: (response) => {
+      setTimeout(() => {
+        queryClient.invalidateQueries(["loggedInUser"]);
+      }, 100); toast.success(`Welcome back ${response.data.username}`);
       closeModal();
       methods.reset();
     },
+    onError: (error) => {
+      toast.error("An error occurred: "+error.message)
+    },
   });
+
 
   async function onSubmit(data) {
     const credentials = {
@@ -59,6 +61,7 @@ export default function LoginInfoForModal() {
             <div className="relative flex items-center justify-center mb-6">
               <h1 className="text-2xl font-semibold text-white">Login</h1>
               <button
+                type="button"
                 onClick={handleCloseModal}
                 className="absolute right-0 text-white hover:text-gray-300 transition-colors font-bold text-2xl cursor-pointer"
               >
@@ -68,10 +71,10 @@ export default function LoginInfoForModal() {
 
             <div className="flex flex-col gap-4">
               <FormTextInput
-                    inputLabel="Username"
-                    inputKey="username"
-                    inputMaxLength={20}
-                    inputMinLength={5}
+                inputLabel="Username"
+                inputKey="username"
+                inputMaxLength={20}
+                inputMinLength={6}
               />
 
               <FormPasswordInput inputLabel="Password" inputKey="password" />
@@ -85,17 +88,16 @@ export default function LoginInfoForModal() {
               {isPending ? <Spinner /> : "Login"}
             </button>
           </div>
-          {isError && (
-            <ErrorBlock
-              message={
-                error?.response?.data?.message ||
-                "Something went wrong, please try again"
-              }
-            />
-          )}
         </form>
       </FormProvider>
-
+      {isError && (
+        <ErrorBlock
+          message={
+            error?.response?.data?.message ||
+            "Something went wrong, please try again"
+          }
+        />
+      )}
       <button
         className="text-white text-lg cursor-pointer hover:text-gray-200"
         onClick={openRegisterModal}

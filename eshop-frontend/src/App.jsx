@@ -7,19 +7,23 @@ import ContactPage from "./pages/Contact";
 import { ModalContextProvider } from "./store/ModalContext";
 import { AuthContextProvider } from "./store/AuthContext";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { queryClient } from "./http/authRequests";
+import { queryClient } from "./http/queryClient";
+import { Toaster } from 'react-hot-toast';
+import ProfilePage from "./pages/ProfilePage";
 
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthContextProvider>
         <ModalContextProvider>
+          <Toaster position="bottom-right" reverseOrder={false} />
           <BrowserRouter>
             <ScrollToTopButton />
             <Routes>
               <Route path="/" element={<Homepage />} />
               <Route path="/about" element={<AboutPage />} />
               <Route path="/contact" element={<ContactPage />} />
+              <Route path="/profile" element={<ProfilePage />} />
             </Routes>
           </BrowserRouter>
         </ModalContextProvider>

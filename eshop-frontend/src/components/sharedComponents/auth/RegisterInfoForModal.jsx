@@ -6,6 +6,11 @@ import FormTextInput from "../utilComponents/FormTextInput";
 import FormPasswordInput from "../utilComponents/FormPasswordInput";
 import { useState } from "react";
 import PasswordChecklist from "react-password-checklist";
+import { register } from "../../../http/authRequests";
+import { useMutation } from "@tanstack/react-query";
+import Spinner from "../utilComponents/Spinner";
+import ErrorBlock from "../utilComponents/ErrorBlock";
+import toast from 'react-hot-toast';
 
 export default function RegisterInfoForModal() {
   const { isRegisterModalOpen, closeModal, openLoginModal } =
@@ -20,6 +25,25 @@ export default function RegisterInfoForModal() {
   const password = methods.watch("password", "");
   const passwordAgain = methods.watch("verifyPassword", "");
 
+
+  const {
+    mutate: signUpUser,
+    data,
+    isPending,
+    isError,
+    error,
+  } = useMutation({
+    mutationFn: (credentials) => register(credentials),
+    onSuccess: (response) => {
+      toast.success(`User ${response.data.username} was created successfully`);
+      closeModal();
+      methods.reset();
+    },
+    onError: (error) => {
+      toast.error("Something went wrong, please try again")
+    },
+  });
+
   async function onSubmit(data) {
     const credentials = {
       firstname: data.firstName,
@@ -29,10 +53,10 @@ export default function RegisterInfoForModal() {
       address: data.address,
       city: data.city,
       postalCode: data.postalCode,
-      phone: data.phone,
+      phoneNumber: data.phone,
       password: data.password,
     };
-    console.log("Data have been submitted " + JSON.stringify(credentials));
+    signUpUser(credentials);
   }
   return (
     <Modal className="modal" open={isRegisterModalOpen()} onClose={closeModal}>
@@ -59,7 +83,7 @@ export default function RegisterInfoForModal() {
                     inputLabel="First Name"
                     inputKey="firstName"
                     inputMaxLength={20}
-                    inputMinLength={5}
+                    inputMinLength={6}
                     pattern={/^[A-Za-z]+$/i}
                     patternMessage="Only Characters are allowed"
                   />
@@ -68,7 +92,7 @@ export default function RegisterInfoForModal() {
                     inputLabel="Last Name"
                     inputKey="lastName"
                     inputMaxLength={20}
-                    inputMinLength={5}
+                    inputMinLength={6}
                     pattern={/^[A-Za-z]+$/i}
                     patternMessage="Only Characters are allowed"
                   />
@@ -86,7 +110,7 @@ export default function RegisterInfoForModal() {
                     inputLabel="Username"
                     inputKey="username"
                     inputMaxLength={20}
-                    inputMinLength={5}
+                    inputMinLength={6}
                   />
                 </div>
                 <div className="relative">
@@ -181,12 +205,19 @@ export default function RegisterInfoForModal() {
               type="submit"
               className="px-10 py-3 bg-white text-stone-900 font-bold rounded-lg hover:bg-gray-300 transition-colors cursor-pointer"
             >
-              Register
+              {isPending ? <Spinner /> : "Register"}
             </button>
           </div>
         </form>
       </FormProvider>
-
+      {isError && (
+        <ErrorBlock
+          message={
+            error?.response?.data?.message ||
+            "Something went wrong, please try again"
+          }
+        />
+      )}
       <button
         className="text-white text-lg cursor-pointer hover:text-gray-200"
         onClick={openLoginModal}

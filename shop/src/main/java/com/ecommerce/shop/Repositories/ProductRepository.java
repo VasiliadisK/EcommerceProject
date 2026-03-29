@@ -21,4 +21,14 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query("SELECT p FROM Product p WHERE p.productName IN :productNames")
     List<Product> findExistingProductsByName(@Param("productNames") List<String> productNames);
+
+    @Query("""
+            SELECT p
+            FROM Product p
+            WHERE p.productName LIKE CONCAT('%', :keyword, '%')
+            AND p.category.categoryId= :categoryId
+            """)
+    Page<Product> findAllByCategoryAndKeyword(@Param("keyword") String keyword,
+                                              @Param("categoryId") Long categoryId,
+                                              Pageable pageDetails);
 }

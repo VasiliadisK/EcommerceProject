@@ -33,16 +33,9 @@ public class CategoryServiceImpl implements CategoryService {
 
 
     @Override
-    public CategoryResponseDto getAllCategories(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
+    public CategoryResponseDto getAllCategories() {
         log.debug("into getAllCategories service implementation");
-
-        Sort sortByAndOrder = sortOrder.equalsIgnoreCase("asc")
-                ? Sort.by(sortBy).ascending()
-                : Sort.by(sortBy).descending();
-
-        Pageable pageDetails = PageRequest.of(pageNumber, pageSize, sortByAndOrder);
-        Page<Category> categoryPage = categoryRepository.findAll(pageDetails);
-        List<Category> categories = categoryPage.getContent();
+        List<Category> categories = categoryRepository.findAll();
 
         if(categories.isEmpty())
             throw new ApiException("No categories currently exist in the database");
@@ -50,11 +43,6 @@ public class CategoryServiceImpl implements CategoryService {
 
         return CategoryResponseDto.builder()
                 .categories(categoryDtoList)
-                .pageNumber(categoryPage.getNumber())
-                .pageSize(categoryPage.getSize())
-                .totalElements(categoryPage.getTotalElements())
-                .totalPages(categoryPage.getTotalPages())
-                .isLastPage(categoryPage.isLast())
                 .build();
     }
 

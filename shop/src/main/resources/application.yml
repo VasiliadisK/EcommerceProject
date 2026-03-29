@@ -24,4 +24,6 @@ logging:
     org.hibernate: INFO
 app:
   cors:
-    allowed-origins: http://localhost:5173/
+    allowed-origins: http://localhost:5173
+image:
+  base.url : http://localhost:8080/images

@@ -12,7 +12,5 @@ import lombok.NoArgsConstructor;
 public class LoginRequestDto {
 
     private String username;
-    @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&]).{8,}$",
-            message = "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character")
     private String password;
 }

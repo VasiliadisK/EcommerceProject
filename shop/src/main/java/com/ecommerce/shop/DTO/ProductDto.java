@@ -15,6 +15,7 @@ public class ProductDto {
     private String description;
     private Integer availableQuantity;
     private double price;
+    private Long categoryId;
     private boolean hasDiscount;
     private double discount;
     private double finalPrice;

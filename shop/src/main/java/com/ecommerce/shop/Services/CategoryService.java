@@ -8,7 +8,7 @@ import jakarta.validation.Valid;
 
 public interface CategoryService {
 
-    CategoryResponseDto getAllCategories(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder);
+    CategoryResponseDto getAllCategories();
 
     CategoryDto getCategoryById(Long categoryId);
 

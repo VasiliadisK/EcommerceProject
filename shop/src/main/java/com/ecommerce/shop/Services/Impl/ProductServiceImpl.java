@@ -7,6 +7,7 @@ import com.ecommerce.shop.Entities.Cart;
 import com.ecommerce.shop.Entities.CartProduct;
 import com.ecommerce.shop.Entities.Category;
 import com.ecommerce.shop.Entities.Product;
+import com.ecommerce.shop.Exceptions.ApiException;
 import com.ecommerce.shop.Exceptions.ResourceAlreadyExistsException;
 import com.ecommerce.shop.Exceptions.ResourceNotFoundException;
 import com.ecommerce.shop.Repositories.CartProductRepository;
@@ -18,6 +19,7 @@ import com.ecommerce.shop.Services.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -42,6 +45,8 @@ public class ProductServiceImpl implements ProductService{
     private final FileServiceImpl fileServiceImpl;
     private final CartRepository cartRepository;
     private final CartProductRepository cartProductRepository;
+    @Value("${image.base.url}")
+    private String imageBaseUrl;
 
     @Autowired
     public ProductServiceImpl(ProductRepository productRepository, ModelMapper modelMapper, CategoryRepository categoryRepository, FileServiceImpl fileServiceImpl, CartProductRepository cartProductRepository, CartRepository cartRepository, CartProductRepository cartProductRepository1)
@@ -56,21 +61,38 @@ public class ProductServiceImpl implements ProductService{
 
 
     @Override
-    public ProductResponseDto getAllProducts(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
+    public ProductResponseDto getAllProducts(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder, String keyword, Long categoryId) {
         log.debug("Into getAllProducts service implementation");
-
+        Page<Product> productPage;
+        List<Product> products ;
         Sort sortByAndOrder = sortOrder.equalsIgnoreCase("asc")
                 ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
 
         Pageable pageDetails = PageRequest.of(pageNumber, pageSize, sortByAndOrder);
-        Page<Product> productPage = productRepository.findAll(pageDetails);
-        List<Product> products = productPage.getContent();
+        if(keyword != null && categoryId != null){
+            productPage = productRepository.findAllByCategoryAndKeyword(keyword, categoryId, pageDetails);
+            products = productPage.getContent();
+        } else if (keyword != null) {
+            productPage = productRepository.findAllByKeyword(keyword, pageDetails);
+            products = productPage.getContent();
+        } else if (categoryId != null) {
+           productPage = productRepository.findAllByCategory(categoryId, pageDetails);
+            products = productPage.getContent();
+        } else{
+            productPage = productRepository.findAll(pageDetails);
+            products = productPage.getContent();
+        }
+
 
         if(products.isEmpty())
-            throw new ResourceNotFoundException("products");
+            return new ProductResponseDto();
 
-        List<ProductDto> productDtosList = products.stream().map(product -> modelMapper.map(product, ProductDto.class)).toList();
+        List<ProductDto> productDtosList = products.stream().map(product -> {
+            ProductDto productDto =  modelMapper.map(product, ProductDto.class);
+            productDto.setImage(constructImageUrl(product.getImage()));
+            return productDto;
+        }).toList();
 
         return ProductResponseDto.builder()
                 .products(productDtosList)
@@ -80,6 +102,12 @@ public class ProductServiceImpl implements ProductService{
                 .totalPages(productPage.getTotalPages())
                 .isLastPage(productPage.isLast())
                 .build();
+    }
+
+    private String constructImageUrl(String imageName){
+        return imageBaseUrl.endsWith("/")
+                ? imageBaseUrl + imageName
+                : imageBaseUrl + "/" + imageName;
     }
 
     @Override
@@ -215,9 +243,11 @@ public class ProductServiceImpl implements ProductService{
     public ProductDto updateProduct(Long productId, ProductRequestDto productRequestDto) {
         Product productFromDb = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
+        Category category = categoryRepository.findById(productRequestDto.getCategoryId()).orElseThrow(() -> new ApiException("Category with id: "+productRequestDto.getCategoryId()+" not found"));
 
         Product product = modelMapper.map(productRequestDto, Product.class);
 
+        productFromDb.setCategory(category);
         productFromDb.setProductName(product.getProductName());
         productFromDb.setDescription(product.getDescription());
         productFromDb.setAvailableQuantity(product.getAvailableQuantity());

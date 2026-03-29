@@ -10,6 +10,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./http/queryClient";
 import { Toaster } from 'react-hot-toast';
 import ProfilePage from "./pages/ProfilePage";
+import Products from "./pages/Products";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
             <ScrollToTopButton />
             <Routes>
               <Route path="/" element={<Homepage />} />
+              <Route path="/products" element={<Products/> } />
               <Route path="/about" element={<AboutPage />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/profile" element={<ProfilePage />} />

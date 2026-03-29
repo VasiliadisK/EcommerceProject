@@ -321,7 +321,7 @@ export default function ProfilePage() {
                         className="cursor-pointer inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#5C3D2E] text-white text-xs uppercase tracking-widest hover:bg-[#7A5244] transition-colors"
                       >
                         <i className="fa-solid fa-check"></i>
-                        {isPendingPass ? <Spinner /> : "Αποθήκευση"}
+                        {isPendingPass ? <Spinner size="sm"/> : "Αποθήκευση"}
                       </button>
                     </div>
                   </form>

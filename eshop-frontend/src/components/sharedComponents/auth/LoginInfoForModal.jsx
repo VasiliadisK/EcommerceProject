@@ -38,7 +38,8 @@ export default function LoginInfoForModal() {
       methods.reset();
     },
     onError: (error) => {
-      toast.error("An error occurred: "+error.message)
+      toast.error(error?.response?.data?.message ||
+        "Something went wrong, please try again")
     },
   });
 
@@ -85,7 +86,7 @@ export default function LoginInfoForModal() {
               type="submit"
               className="px-10 py-3 bg-white text-stone-900 font-bold rounded-lg hover:bg-gray-300 transition-colors cursor-pointer"
             >
-              {isPending ? <Spinner /> : "Login"}
+              {isPending ? <Spinner size="sm" /> : "Login"}
             </button>
           </div>
         </form>

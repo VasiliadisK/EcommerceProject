@@ -205,7 +205,7 @@ export default function RegisterInfoForModal() {
               type="submit"
               className="px-10 py-3 bg-white text-stone-900 font-bold rounded-lg hover:bg-gray-300 transition-colors cursor-pointer"
             >
-              {isPending ? <Spinner /> : "Register"}
+              {isPending ? <Spinner size="sm"/> : "Register"}
             </button>
           </div>
         </form>

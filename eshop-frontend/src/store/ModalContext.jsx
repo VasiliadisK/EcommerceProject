@@ -2,38 +2,46 @@ import { createContext, useState } from "react";
 
 export const ModalContext = createContext({
   activeModal: null,
-  openLoginModal: () => {},
-  openRegisterModal: () => {},
-  closeModal: () => {},
-  isLoginModalOpen: () => {},
-  isRegisterModalOpen: () => {},
+  openLoginModal: () => { },
+  openRegisterModal: () => { },
+  openProductViewModal: () => { },
+  closeModal: () => { },
+  isLoginModalOpen: () => { },
+  isRegisterModalOpen: () => { },
+  isProductViewModalOpen: () => { },
 });
 
 
 export function ModalContextProvider({ children }) {
-  const [activeModal, setActiveModal] = useState(null); // null | 'Login' | 'Register'
+  const [activeModal, setActiveModal] = useState(null); // null | 'Login' | 'Register' | 'ProductView'
 
-    const openLoginModal = () => setActiveModal("Login");
-    const openRegisterModal = () => setActiveModal("Register");
-    const closeModal = () => setActiveModal(null);
+  const openLoginModal = () => setActiveModal("Login");
+  const openRegisterModal = () => setActiveModal("Register");
+  const openProductViewModal = () => setActiveModal("ProductView");
 
-    function isLoginModalOpen()
-    {
-        return activeModal === 'Login';
-    }
+  const closeModal = () => setActiveModal(null);
 
-  function isRegisterModalOpen()
-    {
-        return activeModal === 'Register';
-    }
+  function isLoginModalOpen() {
+    return activeModal === 'Login';
+  }
 
- const modalContext = {
-        activeModal: activeModal, 
-        openLoginModal: openLoginModal, 
-        openRegisterModal: openRegisterModal, 
-        closeModal: closeModal,
-        isLoginModalOpen: isLoginModalOpen,
-        isRegisterModalOpen: isRegisterModalOpen,
+  function isRegisterModalOpen() {
+    return activeModal === 'Register';
+  }
+
+  function isProductViewModalOpen() {
+    return activeModal === 'ProductView';
+  }
+
+  const modalContext = {
+    activeModal: activeModal,
+    openLoginModal: openLoginModal,
+    openRegisterModal: openRegisterModal,
+    openProductViewModal: openProductViewModal,
+    closeModal: closeModal,
+    isLoginModalOpen: isLoginModalOpen,
+    isRegisterModalOpen: isRegisterModalOpen,
+    isProductViewModalOpen: isProductViewModalOpen,
   };
 
   return (

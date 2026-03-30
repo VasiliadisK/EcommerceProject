@@ -1,8 +1,10 @@
 import { useContext, useState } from "react";
-import { ModalContext } from "../../../store/ModalContext";
-import Modal from "../utilComponents/Modal";
+import { ModalContext } from "../../store/ModalContext";
+import Modal from "../sharedComponents/utilComponents/Modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShoppingCart, faBan, faPlus, faMinus, faTag, faEuroSign, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { CartContext } from "../../store/CartContext";
+import toast from "react-hot-toast";
 
 export default function ProductViewModal({
     productId,
@@ -15,6 +17,15 @@ export default function ProductViewModal({
     discount,
     finalPrice
 }) {
+
+    const { addItem } = useContext(CartContext);
+
+    function handleAddItem(item) {
+        addItem({ item, quantity: 1 });
+        toast.success(`Added item ${item.productName} to cart`);
+        closeModal();
+    }
+
     const { isProductViewModalOpen, closeModal } = useContext(ModalContext);
     const [quantity, setQuantity] = useState(1);
     const isAvailable = availableQuantity && Number(availableQuantity) > 0;
@@ -126,7 +137,17 @@ export default function ProductViewModal({
 
                 <button
                     disabled={!isAvailable}
-                    onClick={() => {}}
+                    onClick={() => handleAddItem({
+                        productId,
+                        productName,
+                        image,
+                        description,
+                        availableQuantity,
+                        price,
+                        hasDiscount,
+                        discount,
+                        finalPrice,
+                    })}
                     className={`w-full flex items-center justify-center gap-2 py-3 rounded-lg text-white text-sm uppercase tracking-widest font-medium transition-colors
                         ${isAvailable
                             ? "bg-[#5C3D2E] hover:bg-[#7A5244] cursor-pointer"

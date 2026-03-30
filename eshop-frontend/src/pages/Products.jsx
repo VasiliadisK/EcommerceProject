@@ -6,7 +6,7 @@ import Header from "../components/sharedComponents/Header";
 import FadeIn from "../util/FadeInTag";
 import { ModalContext } from "../store/ModalContext";
 import { useContext, useState, useEffect } from "react";
-import ProductViewModal from "../components/sharedComponents/utilComponents/ProductViewModal";
+import ProductViewModal from "../components/productComponents/ProductViewModal";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { getAllProductsWithPagination } from "../http/productRequests";
 import Filter from "../components/productComponents/Filter";

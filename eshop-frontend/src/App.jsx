@@ -11,24 +11,27 @@ import { queryClient } from "./http/queryClient";
 import { Toaster } from 'react-hot-toast';
 import ProfilePage from "./pages/ProfilePage";
 import Products from "./pages/Products";
+import { CartContextProvider } from "./store/CartContext";
 
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthContextProvider>
-        <ModalContextProvider>
-          <Toaster position="bottom-right" reverseOrder={false} />
-          <BrowserRouter>
-            <ScrollToTopButton />
-            <Routes>
-              <Route path="/" element={<Homepage />} />
-              <Route path="/products" element={<Products/> } />
-              <Route path="/about" element={<AboutPage />} />
-              <Route path="/contact" element={<ContactPage />} />
-              <Route path="/profile" element={<ProfilePage />} />
-            </Routes>
-          </BrowserRouter>
-        </ModalContextProvider>
+        <CartContextProvider>
+          <ModalContextProvider>
+            <Toaster position="bottom-right" reverseOrder={false} />
+            <BrowserRouter>
+              <ScrollToTopButton />
+              <Routes>
+                <Route path="/" element={<Homepage />} />
+                <Route path="/products" element={<Products />} />
+                <Route path="/about" element={<AboutPage />} />
+                <Route path="/contact" element={<ContactPage />} />
+                <Route path="/profile" element={<ProfilePage />} />
+              </Routes>
+            </BrowserRouter>
+          </ModalContextProvider>
+        </CartContextProvider>
       </AuthContextProvider>
     </QueryClientProvider>
   );

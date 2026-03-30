@@ -2,6 +2,8 @@ import { useContext, useState } from "react";
 import { ModalContext } from "../../store/ModalContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBan, faEuroSign, faShoppingCart } from "@fortawesome/free-solid-svg-icons";
+import { CartContext } from "../../store/CartContext";
+import toast from "react-hot-toast";
 
 export default function ProductCard({
     productId,
@@ -15,6 +17,14 @@ export default function ProductCard({
     finalPrice,
     onView
 }) {
+
+    const { addItem } = useContext(CartContext);
+
+    function handleAddItem(item) {
+        addItem({ item, quantity: 1 });
+        toast.success(`Added item ${item.productName} to cart`);
+    }
+
     const { openProductViewModal, isProductViewModalOpen, closeModal } = useContext(ModalContext);
     const isAvailable = availableQuantity && Number(availableQuantity) > 0;
 
@@ -51,8 +61,8 @@ export default function ProductCard({
                 })} className="text-lg font-semibold mb-2 cursor-pointer text-brand">
                     {productName}
                 </h2>
-                <div className="min-h-20 max-h-20">
-                    <p className="text-gray-600 text-sm">
+                <div className="min-h-20 max-h-20 overflow-hidden mb-4">
+                    <p className="text-gray-600 text-sm line-clamp-4">
                         {description}
                     </p>
                 </div>
@@ -68,12 +78,22 @@ export default function ProductCard({
                         </div>
                     </div>
                     <button disabled={!isAvailable}
-                        onClick={() => { }}
+                        onClick={() => handleAddItem({
+                            productId,
+                            productName,
+                            image,
+                            description,
+                            availableQuantity,
+                            price,
+                            hasDiscount,
+                            discount,
+                            finalPrice,
+                        })}
                         className={`bg-brand ${isAvailable ? "opacity-100 hover:bg-brand-dark cursor-pointer" : "opacity-70"}
                                     text-white py-2 px-3 rounded-lg items-center transition-colors duration-300 w-40 flex justify-center`}>
 
                         {isAvailable ? (
-                            <span>
+                            <span >
                                 <span className="mr-2">Add to Cart</span> <FontAwesomeIcon icon={faShoppingCart} />
                             </span>
                         ) : (

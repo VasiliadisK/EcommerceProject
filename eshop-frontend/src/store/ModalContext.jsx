@@ -9,16 +9,21 @@ export const ModalContext = createContext({
   isLoginModalOpen: () => { },
   isRegisterModalOpen: () => { },
   isProductViewModalOpen: () => { },
+  openCartModal: () => { },
+  openCheckoutModal: () => { },
+  isCartModalOpen: () => { },
+  isCheckoutModalOpen: () => { },
 });
 
 
 export function ModalContextProvider({ children }) {
-  const [activeModal, setActiveModal] = useState(null); // null | 'Login' | 'Register' | 'ProductView'
+  const [activeModal, setActiveModal] = useState(null); // null | 'Login' | 'Register' | 'ProductView' | 'cart' | 'checkout'
 
   const openLoginModal = () => setActiveModal("Login");
   const openRegisterModal = () => setActiveModal("Register");
   const openProductViewModal = () => setActiveModal("ProductView");
-
+  const openCartModal = () => setActiveModal("cart");
+  const openCheckoutModal = () => setActiveModal("checkout");
   const closeModal = () => setActiveModal(null);
 
   function isLoginModalOpen() {
@@ -33,6 +38,14 @@ export function ModalContextProvider({ children }) {
     return activeModal === 'ProductView';
   }
 
+  function isCartModalOpen() {
+    return activeModal === 'cart';
+  }
+
+  function isCheckoutModalOpen() {
+    return activeModal === 'checkout';
+  }
+
   const modalContext = {
     activeModal: activeModal,
     openLoginModal: openLoginModal,
@@ -42,6 +55,10 @@ export function ModalContextProvider({ children }) {
     isLoginModalOpen: isLoginModalOpen,
     isRegisterModalOpen: isRegisterModalOpen,
     isProductViewModalOpen: isProductViewModalOpen,
+    openCartModal: openCartModal,
+    openCheckoutModal: openCheckoutModal,
+    isCartModalOpen: isCartModalOpen,
+    isCheckoutModalOpen: isCheckoutModalOpen,
   };
 
   return (

@@ -9,10 +9,16 @@ import RegisterInfoForModal from "./auth/RegisterInfoForModal";
 import { AuthContext } from "../../store/AuthContext";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { CartContext } from "../../store/CartContext";
+import CartModal from "./utilComponents/CartModal";
 
 export default function Header() {
+
+  const { items } = useContext(CartContext);
+  const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
+
   const navigate = useNavigate();
-  const { openLoginModal, isLoginModalOpen, isRegisterModalOpen } = useContext(ModalContext);
+  const { openLoginModal, isLoginModalOpen, isRegisterModalOpen, openCartModal, closeModal, isCartModalOpen, isCheckoutModalOpen } = useContext(ModalContext);
   const { isLoggedIn, logout, loggedInUsername } = useContext(AuthContext);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -80,13 +86,12 @@ export default function Header() {
                 {link.label}
               </Link>
             ))}
-
-            <Link to="/cart" className="relative text-gray-700 hover:text-gray-900 font-medium">
+            <button className="cursor-pointer relative inline-flex" onClick={openCartModal}>
               <FontAwesomeIcon icon={faCartShopping} />
-              <span className="absolute -top-2 -right-3 bg-brand text-white text-xs font-bold w-4 h-4 flex items-center justify-center rounded-full">
-                0
+              <span className="absolute -top-3 -right-3.5 bg-brand text-white text-xs font-bold w-4 h-4 flex items-center justify-center rounded-full">
+                {totalItems}
               </span>
-            </Link>
+            </button>
 
             {!isLoggedIn ? (
               <button
@@ -128,13 +133,15 @@ export default function Header() {
             )}
           </nav>
 
-          <div className="flex items-center gap-4 md:hidden">
-            <Link to="/cart" className="relative text-gray-700">
+          <div className="relative inline-flex items-center gap-4 md:hidden">
+
+            <button className="cursor-pointer" onClick={openCartModal}>
               <FontAwesomeIcon icon={faCartShopping} />
-              <span className="absolute -top-2 -right-3 bg-brand text-white text-xs font-bold w-4 h-4 flex items-center justify-center rounded-full">
-                0
+              <span className="absolute -top-1 right-9 bg-brand text-white text-xs font-bold w-4 h-4 flex items-center justify-center rounded-full">
+                {totalItems}
               </span>
-            </Link>
+            </button>
+
             <button
               onClick={() => setIsMobileMenuOpen((prev) => !prev)}
               className="text-gray-700 text-xl p-1 cursor-pointer"
@@ -229,6 +236,13 @@ export default function Header() {
 
       {isLoginModalOpen() && <LoginInfoForModal />}
       {isRegisterModalOpen() && <RegisterInfoForModal />}
+      {isCartModalOpen() && (
+        <CartModal isOpen={isCartModalOpen()} onClose={() => closeModal()} />
+      )}
+
+      {isCheckoutModalOpen() && (
+        <CheckoutModal isOpen={isCheckoutModalOpen()} onClose={() => closeModal()} />
+      )}
     </>
   );
 }

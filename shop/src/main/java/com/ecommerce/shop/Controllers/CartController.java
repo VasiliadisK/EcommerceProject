@@ -64,10 +64,15 @@ public class CartController {
         return new ResponseEntity<>(updatedCart, HttpStatus.OK);
     }
 
-    @DeleteMapping("/carts/{cartId}/product/{productId}")
-    public ResponseEntity<String> deleteProductFromCart(@PathVariable Long cartId,
-                                                        @PathVariable Long productId){
-        log.debug("Inside deleteProductFromCart controller for cart {} and product {}", cartId, productId);
-        return new ResponseEntity<>(cartService.deleteProduct(cartId,productId),HttpStatus.OK);
+    @DeleteMapping("/carts/userCart/product/{productId}")
+    public ResponseEntity<String> deleteProductFromCart(@PathVariable Long productId){
+        log.debug("Inside deleteProductFromCart controller for product {}", productId);
+        return new ResponseEntity<>(cartService.deleteProduct(productId),HttpStatus.OK);
+    }
+
+    @PostMapping("/carts/userCart/clearCart")
+    public ResponseEntity<String> clearCartOfLoggedInUser(){
+        log.debug("Inside clearCartOfLoggedInUser controller");
+        return new ResponseEntity<>(cartService.clearCart(), HttpStatus.OK);
     }
 }

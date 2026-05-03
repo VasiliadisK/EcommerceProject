@@ -22,7 +22,7 @@ public class AppEnums {
     }
 
     public enum PaymentMethod {
-        STRIPE,
+        REVOLUT,
         PAYPAL,
         CARD
     }

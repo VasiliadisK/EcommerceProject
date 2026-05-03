@@ -17,6 +17,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -184,11 +185,13 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public String deleteProduct(Long cartId, Long productId) {
-        log.debug("Inside deleteProduct service implementation with cart id {} and product id {}", cartId, productId);
+    public String deleteProduct(Long productId) {
 
-        Cart dbCart = cartRepository.findById(cartId).orElseThrow(() -> new ResourceNotFoundException("Cart","cartId",cartId));
-        CartProduct dbCartProduct = cartProductRepository.findCartProductByProductIdAndCartId(productId, cartId);
+        Cart dbCart = cartRepository.findCartByUserId(authUtil.loggedInUserId());
+
+        log.debug("Inside deleteProduct service implementation with product id {}", productId);
+
+        CartProduct dbCartProduct = cartProductRepository.findCartProductByProductIdAndCartId(productId, dbCart.getCartId());
         Product dbProduct = productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product","productId",productId));
         if(dbCartProduct == null)
             throw new ResourceNotFoundException("cartProcut","productId",productId);
@@ -200,5 +203,17 @@ public class CartServiceImpl implements CartService {
         productRepository.save(dbProduct);
         return "Product "+ dbProduct.getProductName() +" was removed from the cart successfully";
 
+    }
+
+    @Override
+    @Transactional
+    public String clearCart() {
+        Cart dbCart = cartRepository.findCartByUserId(authUtil.loggedInUserId());
+        log.debug("Inside clearCart service implementation with cart id {} for user {}", dbCart.getCartId(), authUtil.loggedInUser().getUserName());
+
+        cartProductRepository.deleteByCartId(dbCart.getCartId());
+        dbCart.setTotalPrice(0.0);
+        cartRepository.save(dbCart);
+        return "Cart of user:" + authUtil.loggedInUser().getUserName() + " was cleared successfully";
     }
 }

@@ -20,7 +20,7 @@ public interface ProductService {
 
     ProductDto addProduct(Long categoryId, @Valid ProductRequestDto productRequest);
 
-    ProductDto updateProduct(Long productId, @Valid ProductRequestDto productDTO);
+    ProductDto updateProduct(Long categoryId, Long productId, @Valid ProductRequestDto productDTO);
 
     ProductDto deleteProduct(Long productId);
 

@@ -10,6 +10,8 @@ import com.ecommerce.shop.Exceptions.ResourceNotFoundException;
 import com.ecommerce.shop.Repositories.*;
 import com.ecommerce.shop.Services.CartService;
 import com.ecommerce.shop.Services.OrderService;
+import com.stripe.exception.StripeException;
+import com.stripe.model.PaymentIntent;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -47,7 +49,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public OrderDto placeOrder(User user, PaymentMethod paymentMethod, OrderRequestDto orderRequest) {
+    public OrderDto placeOrder(User user, OrderRequestDto orderRequest) throws StripeException {
+        PaymentIntent intent = PaymentIntent.retrieve(orderRequest.getPgPaymentId());
         Cart userCart = cartRepository.findCartByUserId(user.getUserId());
         if(userCart == null)
             throw new ResourceNotFoundException("Cart","UserId",user.getUserId());
@@ -59,13 +62,15 @@ public class OrderServiceImpl implements OrderService {
         order.setTotalAmount(userCart.getTotalPrice());
         order.setOrderStatus(OrderStatus.PREPARING);
 
+
+
+        PaymentMethod paymentMethod = retrievePaymentMethodFromStripeRequest(intent);
         Payment payment = new Payment(
                                 paymentMethod,
                                 orderRequest.getPgPaymentId(),
                                 orderRequest.getPgStatus(),
                                 orderRequest.getPgResponseMessage(),
                                 orderRequest.getPgName());
-
         payment.setOrder(order);
         payment = paymentRepository.save(payment);
         order.setPayment(payment);
@@ -95,7 +100,7 @@ public class OrderServiceImpl implements OrderService {
             Product product = item.getProduct();
             product.setAvailableQuantity(product.getAvailableQuantity() - requestedQuantity);
             productRepository.save(product);
-            cartService.deleteProduct(userCart.getCartId(), product.getProductId());
+            cartService.deleteProduct(product.getProductId());
         });
 
         OrderDto orderDto = modelMapper.map(order, OrderDto.class);
@@ -106,5 +111,17 @@ public class OrderServiceImpl implements OrderService {
         orderDto.getOrderItems().forEach(item ->
                 item.setFinalPrice(calculateFinalPriceForProduct(item.getOriginalPrice(),item.getDiscount())));
         return orderDto;
+    }
+
+    private static PaymentMethod retrievePaymentMethodFromStripeRequest(PaymentIntent intent) throws StripeException {
+        com.stripe.model.PaymentMethod pm = com.stripe.model.PaymentMethod.retrieve(intent.getPaymentMethod());
+        String pmType = pm.getType();
+
+        return switch (pmType) {
+            case "card" -> PaymentMethod.CARD;
+            case "paypal" -> PaymentMethod.PAYPAL;
+            case "revolut_pay" -> PaymentMethod.REVOLUT;
+            default -> throw new IllegalArgumentException("Unsupported payment method: " + pmType);
+        };
     }
 }

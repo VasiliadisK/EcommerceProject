@@ -96,12 +96,13 @@ public class ProductController {
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
-    @PutMapping("/admin/products/{productId}")
+    @PutMapping("/admin/categories/{categoryId}/products/{productId}")
     public ResponseEntity<ProductDto> updateProduct(@Valid @RequestBody ProductRequestDto productRequestDto,
+                                                    @PathVariable Long categoryId,
                                                     @PathVariable Long productId){
         log.debug("into updateProduct controller");
 
-        ProductDto updatedProductDTO = productService.updateProduct(productId, productRequestDto);
+        ProductDto updatedProductDTO = productService.updateProduct(categoryId, productId, productRequestDto);
         return new ResponseEntity<>(updatedProductDTO, HttpStatus.OK);
     }
 

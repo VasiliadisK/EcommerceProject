@@ -76,6 +76,7 @@ public class SecurityConfig {
             // mention requests that must be authenticated or not authenticated (like docs/swagger/sign in etc)
             .authorizeHttpRequests(auth ->
                     auth.requestMatchers("/api/v1/auth/**").permitAll()
+                        .requestMatchers("/api/v1/order/**").permitAll()
                         .requestMatchers("/v3/api-docs/**").permitAll()
                         .requestMatchers("/swagger-ui/**").permitAll()
                         .requestMatchers("/api/v1/public/**").permitAll()

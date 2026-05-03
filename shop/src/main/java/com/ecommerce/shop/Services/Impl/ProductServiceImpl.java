@@ -16,6 +16,7 @@ import com.ecommerce.shop.Repositories.CategoryRepository;
 import com.ecommerce.shop.Repositories.ProductRepository;
 import com.ecommerce.shop.DTO.RequestsDto.ProductRequestDto;
 import com.ecommerce.shop.Services.ProductService;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -240,10 +241,10 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public ProductDto updateProduct(Long productId, ProductRequestDto productRequestDto) {
+    public ProductDto updateProduct(Long categoryId, Long productId, ProductRequestDto productRequestDto) {
         Product productFromDb = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
-        Category category = categoryRepository.findById(productRequestDto.getCategoryId()).orElseThrow(() -> new ApiException("Category with id: "+productRequestDto.getCategoryId()+" not found"));
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ApiException("Category with id: "+categoryId+" not found"));
 
         Product product = modelMapper.map(productRequestDto, Product.class);
 
@@ -289,10 +290,10 @@ public class ProductServiceImpl implements ProductService{
 
 
     @Override
+    @Transactional
     public ProductDto deleteProduct(Long productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
-
         productRepository.delete(product);
         return modelMapper.map(product, ProductDto.class);
     }

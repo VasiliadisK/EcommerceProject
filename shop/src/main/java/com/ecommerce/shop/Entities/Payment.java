@@ -17,6 +17,7 @@ public class Payment {
     @OneToOne(mappedBy = "payment", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Order order;
     @Column(name = "payment_method")
+    @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
     private String pgPaymentId;
     private String pgStatus;

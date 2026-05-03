@@ -86,7 +86,7 @@ export default function LoginInfoForModal() {
               type="submit"
               className="px-10 py-3 bg-white text-stone-900 font-bold rounded-lg hover:bg-gray-300 transition-colors cursor-pointer"
             >
-              {isPending ? <Spinner size="sm" /> : "Login"}
+              {isPending ? <Spinner size="sm"  borderColor={`brand`}/> : "Login"}
             </button>
           </div>
         </form>

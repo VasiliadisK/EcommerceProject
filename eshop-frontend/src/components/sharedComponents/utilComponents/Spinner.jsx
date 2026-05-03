@@ -1,4 +1,4 @@
-export default function Spinner({ size }) {
+export default function  Spinner({ size, borderColor }) {
 
   const sizes = {
     sm: "w-5 h-5 border-2",
@@ -7,6 +7,6 @@ export default function Spinner({ size }) {
   };
 
   return (
-    <div className={`${sizes[size]} border-2 border-brand border-t-transparent rounded-full animate-spin`} />
+    <div className={`${sizes[size]} border-${borderColor} border-2 border-t-transparent rounded-full animate-spin`} />
   );
 }

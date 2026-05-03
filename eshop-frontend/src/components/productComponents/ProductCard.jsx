@@ -1,9 +1,14 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { ModalContext } from "../../store/ModalContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBan, faEuroSign, faShoppingCart } from "@fortawesome/free-solid-svg-icons";
+import { faBan, faEuroSign, faShoppingCart, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { CartContext } from "../../store/CartContext";
+import { AuthContext } from "../../store/AuthContext";
+import { deleteProductAdmin } from "../../http/productRequests";
+import { queryClient } from "../../http/queryClient";
+import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
+import Spinner from "../sharedComponents/utilComponents/Spinner";
 
 export default function ProductCard({
     productId,
@@ -17,15 +22,32 @@ export default function ProductCard({
     finalPrice,
     onView
 }) {
-
     const { addItem } = useContext(CartContext);
+    const { isLoggedIn, isAdmin } = useContext(AuthContext);
+
+
+    const { mutate: deleteProduct, isPending } = useMutation({
+        mutationFn: deleteProductAdmin,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["userCart"] });
+            queryClient.invalidateQueries({queryKey: ["products"]})
+            toast.success("Item was deleted successfully")
+            
+        },
+        onError: (error) => {
+            toast.error(error?.response?.data?.message || "Something went wrong while deleting the product");
+        },
+    });
+
+    function handleDelete(itemId) {
+        deleteProduct(Number(itemId));
+    }
 
     function handleAddItem(item) {
         addItem({ item, quantity: 1 });
-        toast.success(`Added item ${item.productName} to cart`);
     }
 
-    const { openProductViewModal, isProductViewModalOpen, closeModal } = useContext(ModalContext);
+    const { openProductViewModal, openLoginModal } = useContext(ModalContext);
     const isAvailable = availableQuantity && Number(availableQuantity) > 0;
 
     function handleProductView() {
@@ -33,7 +55,19 @@ export default function ProductCard({
         openProductViewModal();
     }
     return (
-        <div className="border rounded-lg shadow-xl overflow-hidden transition-shadow duration-300">
+        <div className="relative border rounded-lg shadow-xl overflow-hidden transition-shadow duration-300">
+            {isAdmin() && (
+                <button
+                    onClick={() => handleDelete(
+                        productId,
+                    )}
+                    disabled={false}
+                    className={`absolute top-2 right-2 z-10 flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium cursor-pointer
+                        shadow-md transition-all duration-200 disabled:opacity-60 bg-brand/90 text-white hover:bg-red-50 hover:text-red-600 backdrop-blur-sm`}
+                >
+                    {isPending ? <Spinner size="sm"/> : <FontAwesomeIcon icon={faTrash} className="text-xs" />}
+                </button>
+            )}
             <div onClick={() => handleProductView({
                 productId,
                 productName,
@@ -78,17 +112,21 @@ export default function ProductCard({
                         </div>
                     </div>
                     <button disabled={!isAvailable}
-                        onClick={() => handleAddItem({
-                            productId,
-                            productName,
-                            image,
-                            description,
-                            availableQuantity,
-                            price,
-                            hasDiscount,
-                            discount,
-                            finalPrice,
-                        })}
+                        onClick={() => {
+                            isLoggedIn
+                                ? handleAddItem({
+                                    productId,
+                                    productName,
+                                    image,
+                                    description,
+                                    availableQuantity,
+                                    price,
+                                    hasDiscount,
+                                    discount,
+                                    finalPrice,
+                                }) :
+                                openLoginModal()
+                        }}
                         className={`bg-brand ${isAvailable ? "opacity-100 hover:bg-brand-dark cursor-pointer" : "opacity-70"}
                                     text-white py-2 px-3 rounded-lg items-center transition-colors duration-300 w-40 flex justify-center`}>
 

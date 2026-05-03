@@ -17,7 +17,6 @@ export function AuthContextProvider({ children }) {
   });
 
   const loggedInUser = data?.data ?? null;
-
   const login = (userData) => {
     queryClient.setQueryData(["loggedInUser"], { data: userData });
   };
@@ -41,7 +40,7 @@ export function AuthContextProvider({ children }) {
 
   return (
     <AuthContext.Provider value={authContext}>
-      {isLoading ? <Spinner size="sm"/> : children}
+      {isLoading ? <Spinner size="sm"  borderColor={`brand`}/> : children}
     </AuthContext.Provider>
   );
 }

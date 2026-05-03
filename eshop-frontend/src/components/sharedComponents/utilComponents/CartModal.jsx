@@ -1,22 +1,18 @@
-import { CartContext } from "../../../store/CartContext";
+import { faEuroSign, faMinus, faPlus, faTrashCan, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useContext } from "react";
+import { Link } from "react-router-dom";
+import { CartContext } from "../../../store/CartContext";
 import { ModalContext } from "../../../store/ModalContext";
 import Modal from "../utilComponents/Modal";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrashCan, faEuroSign, faXmark, faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
-
 export default function CartModal({ onClose }) {
-    const { items, removeItem, clearCart, increaseQuantity, decreaseQuantity } = useContext(CartContext);
-    const { openCheckoutModal } = useContext(ModalContext);
+    const { items, total, removeItem, clearCart, increaseQuantity, decreaseQuantity } = useContext(CartContext);
+    const {closeModal } = useContext(ModalContext);
 
     function handleRemoveItem(item) { removeItem(item.productId); }
     function handleClearCart() { clearCart(); }
     function handleIncreaseQuantity(item) { increaseQuantity(item.productId); }
     function handleDecreaseQuantity(item) { decreaseQuantity(item.productId); }
-
-    const total = items.reduce(
-        (sum, cartItem) => sum + Number(cartItem.item.finalPrice) * cartItem.quantity, 0
-    );
 
     return (
         <Modal
@@ -66,43 +62,43 @@ export default function CartModal({ onClose }) {
 
                 {items.map((cartItem) => (
                     <div
-                        key={cartItem.item.productId}
+                        key={cartItem.productId}
                         className="flex items-center gap-4 border-b border-white/20 pb-4"
                     >
                         <img
-                            src={cartItem.item.image}
-                            alt={cartItem.item.productName}
+                            src={cartItem.image}
+                            alt={cartItem.productName}
                             className="w-16 h-16 object-cover rounded-lg shrink-0"
                         />
                         <div className="flex-1 min-w-0">
                             <h3 className="text-white text-sm font-semibold truncate">
-                                {cartItem.item.productName}
+                                {cartItem.productName}
                             </h3>
                             <p className="text-white/80 text-sm font-bold mt-0.5">
-                                {Number(cartItem.item.finalPrice).toFixed(2)}<FontAwesomeIcon icon={faEuroSign} className="ml-0.5 text-xs" />
+                                {Number(cartItem.finalPrice).toFixed(2)}<FontAwesomeIcon icon={faEuroSign} className="ml-0.5 text-xs" />
                             </p>
                         </div>
                         <div className="flex items-center gap-2">
                             <button
-                                onClick={() => handleDecreaseQuantity(cartItem.item)}
+                                onClick={() => handleDecreaseQuantity(cartItem)}
                                 disabled={cartItem.quantity <= 1}
                                 className="w-7 h-7 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white/10 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
                             >
                                 <FontAwesomeIcon icon={faMinus} className="text-xs" />
                             </button>
                             <span className="w-5 text-center text-sm font-medium text-white">
-                                {cartItem.quantity}
+                                {cartItem.requestedQuantity}
                             </span>
                             <button
-                                onClick={() => handleIncreaseQuantity(cartItem.item)}
-                                disabled={cartItem.quantity >= cartItem.item.availableQuantity}
+                                onClick={() => handleIncreaseQuantity(cartItem)}
+                                disabled={cartItem.quantity >= cartItem.availableQuantity}
                                 className="w-7 h-7 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white/10 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
                             >
                                 <FontAwesomeIcon icon={faPlus} className="text-xs" />
                             </button>
                         </div>
                         <button
-                            onClick={() => handleRemoveItem(cartItem.item)}
+                            onClick={() => handleRemoveItem(cartItem)}
                             className="text-white/50 hover:text-red-300 transition-colors cursor-pointer border-none bg-transparent"
                         >
                             <FontAwesomeIcon icon={faTrashCan} className="text-sm" />
@@ -127,12 +123,13 @@ export default function CartModal({ onClose }) {
                             <FontAwesomeIcon icon={faTrashCan} />
                             Clear
                         </button>
-                        <button
-                            onClick={openCheckoutModal}
-                            className="flex-1 bg-white text-brand hover:bg-white/90 py-3 rounded-lg transition-colors text-sm uppercase tracking-widest font-medium cursor-pointer"
-                        >
-                            Checkout
-                        </button>
+                        <Link to="/checkout" onClick={closeModal} className="bg-white text-brand px-8 py-3 font-bold hover:bg-gray-50 transition rounded-lg hover:bg-white/90 transition-colors ">
+                            <button
+                                className="flex-1 bg-white text-brand hover:bg-white/90 py-3 rounded-lg transition-colors text-sm uppercase tracking-widest font-medium cursor-pointer"
+                            >
+                                Checkout
+                            </button>
+                        </Link>
                     </div>
                 </div>
             )}

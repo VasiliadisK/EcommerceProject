@@ -1,5 +1,5 @@
 import logo from "../../assets/images/common/logo.png";
-import { faCartShopping, faUser, faArrowRightFromBracket, faRightToBracket, faBars, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faCartShopping, faUser, faArrowRightFromBracket, faRightToBracket, faBars, faXmark, faShield } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
 import { ModalContext } from "../../store/ModalContext";
@@ -15,11 +15,11 @@ import CartModal from "./utilComponents/CartModal";
 export default function Header() {
 
   const { items } = useContext(CartContext);
-  const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
+  const totalItems = items.reduce((sum, item) => sum + item.requestedQuantity, 0);
 
   const navigate = useNavigate();
   const { openLoginModal, isLoginModalOpen, isRegisterModalOpen, openCartModal, closeModal, isCartModalOpen, isCheckoutModalOpen } = useContext(ModalContext);
-  const { isLoggedIn, logout, loggedInUsername } = useContext(AuthContext);
+  const { isLoggedIn, logout, loggedInUsername, isAdmin } = useContext(AuthContext);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -120,6 +120,17 @@ export default function Header() {
                       <FontAwesomeIcon icon={faUser} />
                       Edit Profile
                     </Link>
+                    {isAdmin() &&
+                      <Link
+                      //TO-DO ADMIN PANEL
+                        to="/admin"
+                        onClick={() => setIsDropdownOpen(false)}
+                        className="flex items-center gap-2 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-t-lg transition"
+                      >
+                        <FontAwesomeIcon icon={faShield} />
+                        Admin Panel
+                      </Link>
+                    }
                     <button
                       onClick={handleLogout}
                       className="w-full flex items-center gap-2 px-4 py-3 text-red-500 hover:bg-gray-50 rounded-b-lg transition cursor-pointer"

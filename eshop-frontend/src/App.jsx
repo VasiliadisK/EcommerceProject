@@ -12,6 +12,8 @@ import { Toaster } from 'react-hot-toast';
 import ProfilePage from "./pages/ProfilePage";
 import Products from "./pages/Products";
 import { CartContextProvider } from "./store/CartContext";
+import CheckoutPage from "./pages/Checkout";
+import OrderConfirmation from './components/checkoutComponents/OrderConfirmation'
 
 function App() {
   return (
@@ -28,6 +30,8 @@ function App() {
                 <Route path="/about" element={<AboutPage />} />
                 <Route path="/contact" element={<ContactPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
+                <Route path="/checkout" element={<CheckoutPage />} />
+                <Route path="/order-confirm" element={<OrderConfirmation />} />
               </Routes>
             </BrowserRouter>
           </ModalContextProvider>

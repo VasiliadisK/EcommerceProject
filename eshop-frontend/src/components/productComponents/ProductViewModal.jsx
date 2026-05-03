@@ -4,7 +4,6 @@ import Modal from "../sharedComponents/utilComponents/Modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShoppingCart, faBan, faPlus, faMinus, faTag, faEuroSign, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { CartContext } from "../../store/CartContext";
-import toast from "react-hot-toast";
 
 export default function ProductViewModal({
     productId,
@@ -22,7 +21,6 @@ export default function ProductViewModal({
 
     function handleAddItem(item) {
         addItem({ item, quantity: 1 });
-        toast.success(`Added item ${item.productName} to cart`);
         closeModal();
     }
 

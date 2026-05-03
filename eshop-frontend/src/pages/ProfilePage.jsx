@@ -68,7 +68,7 @@ export default function ProfilePage() {
       accountMethods.reset();
     },
     onError: () => {
-      toast.error("Something went wrong while updating user " + user.userName)
+      toast.error(error?.response?.data?.message || "Something went wrong while updating user " + user.userName)
     },
   });
 
@@ -87,7 +87,7 @@ export default function ProfilePage() {
       navigate("/");
     },
     onError: () => {
-      toast.error("Something went wrong while updating password of user " + user.userName)
+      toast.error(error?.response?.data?.message || "Something went wrong while updating password of user " + user.userName)
     },
   });
 
@@ -239,7 +239,7 @@ export default function ProfilePage() {
                           type="submit"
                           className="cursor-pointer inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#5C3D2E] text-white text-xs uppercase tracking-widest hover:bg-[#7A5244] transition-colors"
                         >
-                          <i className="fa-solid fa-check"></i> {isPending ? <Spinner /> : "Αποθήκευση"}
+                          <i className="fa-solid fa-check"></i> {isPending ? <Spinner  borderColor={`brand`}/> : "Αποθήκευση"}
                         </button>
                       </div>
                     </form>
@@ -321,7 +321,7 @@ export default function ProfilePage() {
                         className="cursor-pointer inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#5C3D2E] text-white text-xs uppercase tracking-widest hover:bg-[#7A5244] transition-colors"
                       >
                         <i className="fa-solid fa-check"></i>
-                        {isPendingPass ? <Spinner size="sm"/> : "Αποθήκευση"}
+                        {isPendingPass ? <Spinner size="sm"  borderColor={`brand`}/> : "Αποθήκευση"}
                       </button>
                     </div>
                   </form>

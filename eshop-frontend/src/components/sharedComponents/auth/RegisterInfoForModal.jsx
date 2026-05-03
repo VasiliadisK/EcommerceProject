@@ -40,7 +40,7 @@ export default function RegisterInfoForModal() {
       methods.reset();
     },
     onError: (error) => {
-      toast.error("Something went wrong, please try again")
+      toast.error(error?.response?.data?.message || "Something went wrong, please try again")
     },
   });
 
@@ -205,7 +205,7 @@ export default function RegisterInfoForModal() {
               type="submit"
               className="px-10 py-3 bg-white text-stone-900 font-bold rounded-lg hover:bg-gray-300 transition-colors cursor-pointer"
             >
-              {isPending ? <Spinner size="sm"/> : "Register"}
+              {isPending ? <Spinner size="sm"  borderColor={`brand`}/> : "Register"}
             </button>
           </div>
         </form>

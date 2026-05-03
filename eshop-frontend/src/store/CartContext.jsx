@@ -1,89 +1,109 @@
 import { useState, useEffect, createContext } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { addProductToUserCart, getUserCart, removeProductFromCart, updateProductQuantityForCart, clearCart } from "../http/productRequests";
+import toast from "react-hot-toast";
 
 export const CartContext = createContext({
     items: [],
-    addItem: (item) => { },
-    removeItem: (id) => { },
+    total: 0,
+    addItem: () => { },
+    removeItem: () => { },
     clearCart: () => { },
-    increaseQuantity: (id) => { },
-    decreaseQuantity: (id) => { },
+    increaseQuantity: () => { },
+    decreaseQuantity: () => { },
 });
 
 export function CartContextProvider({ children }) {
-    const [cartItems, setCartItems] = useState(() => {
-        try {
-            const stored = localStorage.getItem("cart");
-            return stored ? JSON.parse(stored) : [];
-        } catch {
-            return [];
-        }
+    const queryClient = useQueryClient();
+
+    const { data: cartData } = useQuery({
+        queryKey: ["userCart"],
+        queryFn: getUserCart,
+        retry: false,
     });
 
+    const { mutate: addProductToCart, isPending } = useMutation({
+        mutationFn: addProductToUserCart,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["userCart"] });
+        },
+        onError: (error) => {
+            toast.error(error?.response?.data?.message || "Something went wrong while adding the product");
+        },
+    });
+
+    const { mutate: updateProductQuantity } = useMutation({
+        mutationFn: updateProductQuantityForCart,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["userCart"] });
+        },
+        onError: (error) => {
+            toast.error(error?.response?.data?.message || "Something went wrong while updating the product");
+        },
+    });
+
+    const { mutate: clearCartForLoggedInUser } = useMutation({
+        mutationFn: clearCart,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["userCart"] });
+        },
+        onError: (error) => {
+            toast.error(error?.response?.data?.message || "Something went wrong while clearing the cart");
+        },
+    });
+
+    const { mutate: removeProduct } = useMutation({
+        mutationFn: removeProductFromCart,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["userCart"] });
+        },
+        onError: (error) => {
+            toast.error(error?.response?.data?.message || "Something went wrong while removing the product");
+        },
+    });
+
+    const [cartItems, setCartItems] = useState([]);
+
     useEffect(() => {
-        try {
-            localStorage.setItem("cart", JSON.stringify(cartItems));
-        } catch {
-            console.error("Failed to save cart to localStorage");
+        if (cartData?.data?.productsList) {
+            setCartItems(cartData.data.productsList);
         }
-    }, [cartItems]);
+    }, [cartData]);
+
+    const total = cartItems.reduce(
+        (sum, cartItem) => sum + Number(cartItem.finalPrice) * cartItem.requestedQuantity, 0
+    );
 
     function handleAddItem({ item, quantity }) {
-
-        var itemExists = false;
-
-        const completeItem = {
-            item: item,
-            quantity: quantity,
-        };
-                
-        if (cartItems.length > 0) {
-            itemExists = cartItems.find((cartItem) => {
-                return cartItem.item.productId === item.productId;
-            });
-        }
+        const itemExists = cartItems.find((cartItem) => cartItem.productId === item.productId);
 
         if (itemExists) {
-            const foundItem = cartItems.map((cartItm) => {
-                if (cartItm.item.productId === item.productId)
-                    return { ...cartItm, quantity: cartItm.quantity + 1 };
-                else return cartItm;
-            });
-
-            setCartItems(foundItem);
-            itemExists = false;
-        } else setCartItems([...cartItems, completeItem]);
+            updateProductQuantity({ productId: item.productId, productQuantity: 1 });
+        } else {
+            addProductToCart({ productId: Number(item.productId), productQuantity: quantity });
+            toast.success(`Added item ${item.productName} to cart`);
+        }
     }
 
-    function handleRemoveItem(id) {
-        const newCart = cartItems.filter((cartItem) => cartItem.item.productId !== id);
-        setCartItems(newCart);
+    function handleRemoveItem(productId) {
+        removeProduct({productId: Number(productId)});
     }
 
     function handleClearCart() {
-        setCartItems([]);
+        clearCartForLoggedInUser();
     }
 
-    function handleIncreaseQuantity(id) {
-        const updatedItems = cartItems.map((cartItem) => {
-            if (cartItem.item.productId === id) {
-                return { ...cartItem, quantity: cartItem.quantity + 1 };
-            } else return cartItem;
-        });
-        setCartItems(updatedItems);
+    function handleIncreaseQuantity(productId) {
+        updateProductQuantity({ productId, productQuantity: 1 });
     }
 
-    function handleDecreaseQuantity(id) {
-        const updatedItems = cartItems.map((cartItem) => {
-            if (cartItem.item.productId === id) {
-                return { ...cartItem, quantity: cartItem.quantity - 1 };
-            } else return cartItem;
-        })
-            .filter((cartItem) => cartItem.quantity > 0);
-        setCartItems(updatedItems);
+    function handleDecreaseQuantity(productId) {
+        updateProductQuantity({ productId, productQuantity: -1 });
     }
 
     const cartContext = {
         items: cartItems,
+        total,
         addItem: handleAddItem,
         removeItem: handleRemoveItem,
         clearCart: handleClearCart,

@@ -12,7 +12,8 @@ import { getAllProductsWithPagination } from "../http/productRequests";
 import Filter from "../components/productComponents/Filter";
 import { useSearchParams } from "react-router-dom";
 import Pagination from "../components/sharedComponents/Pagination";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 export default function Products() {
     const [searchParams, setSearchParams] = useSearchParams();
     const search = searchParams.get("keyword") || "";
@@ -47,7 +48,7 @@ export default function Products() {
     }, [search]);
 
     const [selectedProductForView, setSelectedProductForView] = useState({});
-    const { isProductViewModalOpen } = useContext(ModalContext);
+    const { isProductViewModalOpen, openAdminAddModal } = useContext(ModalContext);
 
     const params = {
         pageNumber: pageNumber,
@@ -65,7 +66,6 @@ export default function Products() {
         placeholderData: keepPreviousData,
     });
 
-    // Εξάγουμε τα δεδομένα ακριβώς όπως έρχονται από το backend response
     const products = data?.data?.products ?? [];
     const totalPages = data?.data?.totalPages ?? 0;
 
@@ -74,14 +74,19 @@ export default function Products() {
             <Header />
             <div className="lg:px-14 sm:px-8 px-4 py-14 2xl:w-[90%] 2xl:mx-auto">
                 <FadeIn>
-                    <Filter
-                        onCategoryChange={(val) => updateParam("categoryId", val)}
-                        onSearchChange={(val) => updateParam("keyword", val)}
-                        onSortChange={(val) => updateParam("sortOrder", val)}
-                    />
+                    <div className="flex flex-wrap items-start gap-3">
+                        <div className="flex-1 min-w-0">
+                            <Filter
+                                onCategoryChange={(val) => updateParam("categoryId", val)}
+                                onSearchChange={(val) => updateParam("keyword", val)}
+                                onSortChange={(val) => updateParam("sortOrder", val)}
+                            />
+                        </div>
+                    </div>
+
                     {isLoading ? (
                         <div className="flex justify-center items-center min-h-[300px]">
-                            <Spinner size="lg" />
+                            <Spinner size="lg" borderColor={`brand`} />
                         </div>
                     ) : isError ? (
                         <div className="flex justify-center items-center h-[300px]">

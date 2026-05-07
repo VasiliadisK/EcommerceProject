@@ -1,4 +1,4 @@
-export default function Pagination({ totalPages, currentPage, onPageChange }) {
+export default function Pagination({ totalPages, currentPage, onPageChange, activeClasses, inactiveClasses }) {
     if (totalPages <= 1) return null;
 
     return (
@@ -11,10 +11,10 @@ export default function Pagination({ totalPages, currentPage, onPageChange }) {
                         <button
                             key={index}
                             onClick={() => onPageChange(index)}
-                            className={`w-10 h-10 flex items-center justify-center rounded-md font-semibold transition-all cursor-pointer
+                            className={`w-10 h-10 flex items-center justify-center rounded-md font-semibold transition-all cursor-pointer 
                                 ${isActive 
-                                    ? "bg-brand text-white shadow-md scale-105" 
-                                    : "bg-transparent text-[#8C7B73] hover:bg-[#F5EDE4] hover:text-[#2C1810]"
+                                    ? `${activeClasses == undefined ? "bg-brand text-white" : activeClasses}  shadow-md scale-105` 
+                                    : `${inactiveClasses == undefined ? "text-[#8C7B73]" : inactiveClasses} bg-transparent  hover:bg-[#F5EDE4] hover:text-[#2C1810]`
                                 }`}
                         >
                             {index + 1}

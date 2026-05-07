@@ -13,8 +13,10 @@ import ProfilePage from "./pages/ProfilePage";
 import Products from "./pages/Products";
 import { CartContextProvider } from "./store/CartContext";
 import CheckoutPage from "./pages/Checkout";
-import OrderConfirmation from './components/checkoutComponents/OrderConfirmation'
-
+import OrderConfirmation from './components/checkoutComponents/OrderConfirmation';
+import ProtectedAdminRoute from "./components/sharedComponents/ProtectedAdminRoute";
+import AdminLayout from "./components/adminPanelComponents/AdminLayout";
+import AdminProducts from "./components/adminPanelComponents/AdminProducts";
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
@@ -32,6 +34,16 @@ function App() {
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/checkout" element={<CheckoutPage />} />
                 <Route path="/order-confirm" element={<OrderConfirmation />} />
+                <Route path="/admin" element={
+                  <ProtectedAdminRoute>
+                    <AdminLayout />
+                  </ProtectedAdminRoute>
+                }>
+                  {/* <Route path="orders" element={<AdminOrders />} /> */}
+                  <Route path="products" element={<AdminProducts />} />
+                  {/* <Route path="categories" element={<AdminCategories />} />
+                  <Route path="users" element={<AdminUsers />} /> */}
+                </Route>
               </Routes>
             </BrowserRouter>
           </ModalContextProvider>

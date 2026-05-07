@@ -9,6 +9,7 @@ export default function FormTextInput({
   pattern,
   patternMessage,
   placeholder,
+  step,
 }) {
   const {
     register,
@@ -20,7 +21,9 @@ export default function FormTextInput({
       <label className="text-sm font-medium text-white mb-2">
         {inputLabel}
       </label>
-      <input type={inputType ? inputType : "text"}
+      <input 
+      type={inputType ? inputType : "text"}
+      step={step}
 
         {...register(inputKey, {
           required: `${inputLabel} is required`,
@@ -40,9 +43,9 @@ export default function FormTextInput({
           }),
           ...(pattern && patternMessage && {
             pattern: {
-            value: pattern,
-            message: patternMessage,
-          },
+              value: pattern,
+              message: patternMessage,
+            },
           })
         })}
         className="w-full rounded px-4 py-2.5 bg-white text-black placeholder-gray-400 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-transparent transition-all"

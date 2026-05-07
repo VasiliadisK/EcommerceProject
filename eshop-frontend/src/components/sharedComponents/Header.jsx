@@ -122,7 +122,7 @@ export default function Header() {
                     </Link>
                     {isAdmin() &&
                       <Link
-                      //TO-DO ADMIN PANEL
+                        //TO-DO ADMIN PANEL
                         to="/admin"
                         onClick={() => setIsDropdownOpen(false)}
                         className="flex items-center gap-2 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-t-lg transition"
@@ -233,6 +233,24 @@ export default function Header() {
                   <span className="text-white font-medium text-sm">{loggedInUsername}</span>
                 </div>
               </Link>
+              {isAdmin() && (
+                <Link
+                  to="/admin"
+                  onClick={closeMobileMenu}
+                  className="flex items-center gap-3 px-4 py-3 text-white bg-white/10 hover:bg-white/20 rounded-lg transition"
+                  style={{
+                    transitionDelay: isMobileMenuOpen ? `${navLinks.length * 50}ms` : "0ms",
+                    transform: isMobileMenuOpen ? "translateX(0)" : "translateX(20px)",
+                    opacity: isMobileMenuOpen ? 1 : 0,
+                    transitionProperty: "transform, opacity",
+                    transitionDuration: "0.3s",
+                    transitionTimingFunction: "ease",
+                  }}
+                >
+                  <FontAwesomeIcon icon={faShield} />
+                  Admin Panel
+                </Link>
+              )}
               <button
                 onClick={handleLogout}
                 className="w-full flex items-center justify-center gap-2 px-4 py-3 text-white bg-white/10 hover:bg-red-500/30 rounded-lg transition cursor-pointer"

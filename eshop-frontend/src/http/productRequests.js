@@ -15,8 +15,19 @@ export const updateProductQuantityForCart = ({ productId, productQuantity }) =>
 export const removeProductFromCart = ({ productId }) =>
   api.delete(`/carts/userCart/product/${productId}`);
 
-export const clearCart = () => 
+export const clearCart = () =>
   api.post(`/carts/userCart/clearCart`);
 
-export const deleteProductAdmin = (productId) => 
+export const deleteProductAdmin = (productId) =>
   api.delete(`/admin/products/${productId}`)
+
+export const updateProductImage = ({ productId, imageUrl }) =>
+  api.put(`/admin/products/${productId}/image`, imageUrl, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+
+export const updateProduct = ({categoryId, productId, productBody}) => 
+  api.put(`/admin/categories/${categoryId}/products/${productId}`,productBody);
+
+export const createProduct = ({categoryId, productBody}) => 
+  api.post(`/admin/categories/${categoryId}/product`, productBody);

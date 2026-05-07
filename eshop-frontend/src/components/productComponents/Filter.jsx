@@ -1,13 +1,28 @@
-import { faSearch, faChevronDown, faCheck, faArrowUpAZ, faArrowDownAZ, faArrowUp, faArrowDown } from "@fortawesome/free-solid-svg-icons";
+import { faSearch, faChevronDown, faCheck, faArrowUp, faArrowDown } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as Popover from "@radix-ui/react-popover";
 import { useQuery } from "@tanstack/react-query";
 import { getAllCategories } from "../../http/categoryRequests";
 
-export default function Filter({ onCategoryChange, onSearchChange, onSortChange }) {
-    
-    const { data, isLoading, isError, error } = useQuery({
+export default function Filter({
+    onCategoryChange,
+    onSearchChange,
+    onSortChange,
+    inputClasses,
+    buttonClasses,
+    dropdownClasses,
+}) {
+
+    const defaultInputClasses = "border border-brand text-slate-800 rounded-md py-2 pl-10 pr-4 w-full focus:outline-none focus:ring-2 focus:ring-brand transition duration-200";
+    const defaultButtonClasses = "inline-flex items-center gap-2 px-4 py-2 rounded-md border border-brand bg-white text-slate-800 text-sm font-medium hover:bg-[#F5EDE4] transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand";
+    const defaultDropdownClasses = "bg-white border border-[#E8DDD5] rounded-lg shadow-lg z-50 py-1 w-52 max-h-64 overflow-y-auto";
+
+    const resolvedInputClasses = inputClasses ?? defaultInputClasses;
+    const resolvedButtonClasses = buttonClasses ?? defaultButtonClasses;
+    const resolvedDropdownClasses = dropdownClasses ?? defaultDropdownClasses;
+
+    const { data } = useQuery({
         queryKey: ["getAllCategories"],
         queryFn: () => getAllCategories(),
         retry: false,
@@ -50,7 +65,7 @@ export default function Filter({ onCategoryChange, onSearchChange, onSortChange 
                     type="text"
                     onChange={handleSearchChange}
                     placeholder="Search products"
-                    className="border border-brand text-slate-800 rounded-md py-2 pl-10 pr-4 w-full focus:outline-none focus:ring-2 focus:ring-brand transition duration-200"
+                    className={resolvedInputClasses}
                 />
                 <FontAwesomeIcon icon={faSearch} className="absolute left-3 text-slate-400" />
             </div>
@@ -58,30 +73,28 @@ export default function Filter({ onCategoryChange, onSearchChange, onSortChange 
             <div className="flex sm:flex-row flex-col gap-3 items-center">
                 <button
                     onClick={handleSortToggle}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-md border border-brand bg-white text-slate-800 text-sm font-medium hover:bg-[#F5EDE4] transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand"
+                    className={resolvedButtonClasses}
                 >
-                    <FontAwesomeIcon icon={
-                        sortOrder === null ? faArrowUp :
-                            sortOrder === "asc" ? faArrowUp :
-                                faArrowDown
-                    } className={`${sortOrder === null ? "text-slate-400" : "text-brand"}`} />
-
-                    {sortOrder === null ? "Sort" : sortOrder === "asc" ? "Ascending" : "Descending  "}
+                    <FontAwesomeIcon
+                        icon={sortOrder === "desc" ? faArrowDown : faArrowUp}
+                        className={sortOrder === null ? "text-slate-400" : "text-brand"}
+                    />
+                    {sortOrder === null ? "Sort" : sortOrder === "asc" ? "Ascending" : "Descending"}
                 </button>
 
                 <Popover.Root open={open} onOpenChange={setOpen}>
                     <Popover.Trigger asChild>
-                        <button className="w-52 inline-flex items-center justify-between gap-3 px-4 py-2 rounded-md border border-brand bg-white text-slate-800 text-sm font-medium hover:bg-[#F5EDE4] transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand">
+                        <button className={`w-52 justify-between gap-3 ${resolvedButtonClasses}`}>
                             <span>{selected?.categoryName ?? "All Categories"}</span>
                             <FontAwesomeIcon
                                 icon={faChevronDown}
-                                className={`text-brand text-xs transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+                                className={`text-xs transition-transform duration-200 ${open ? "rotate-180" : ""}`}
                             />
                         </button>
                     </Popover.Trigger>
                     <Popover.Portal>
                         <Popover.Content
-                            className="bg-white border border-[#E8DDD5] rounded-lg shadow-lg z-50 py-1 w-52 max-h-64 overflow-y-auto"
+                            className={resolvedDropdownClasses}
                             sideOffset={6}
                             align="end"
                             onOpenAutoFocus={(e) => e.preventDefault()}

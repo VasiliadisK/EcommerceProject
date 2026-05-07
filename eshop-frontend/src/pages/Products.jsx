@@ -12,8 +12,8 @@ import { getAllProductsWithPagination } from "../http/productRequests";
 import Filter from "../components/productComponents/Filter";
 import { useSearchParams } from "react-router-dom";
 import Pagination from "../components/sharedComponents/Pagination";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+
+
 export default function Products() {
     const [searchParams, setSearchParams] = useSearchParams();
     const search = searchParams.get("keyword") || "";

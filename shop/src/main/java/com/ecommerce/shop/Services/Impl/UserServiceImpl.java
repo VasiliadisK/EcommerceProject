@@ -115,11 +115,16 @@ public class UserServiceImpl implements UserService {
         userEntity.setLastName(userRequestDto.getLastName());
         userEntity.setUserName(userRequestDto.getUserName());
         userEntity.setEmail(userRequestDto.getEmail());
-        userEntity.setPassword(userRequestDto.getPassword());
         userEntity.setAddress(userRequestDto.getAddress());
         userEntity.setPhoneNumber(userRequestDto.getPhoneNumber());
         userEntity.setPostalCode(userRequestDto.getPostalCode());
         userEntity.setCity(userRequestDto.getCity());
+        if(userRequestDto.getPassword() != null){
+            userEntity.setPassword(userRequestDto.getPassword());
+        }
+        else
+            //Keep the same password if nothing is provided
+            userEntity.setPassword(userEntity.getPassword());
         if(userRequestDto.getRole() != null) {
             if(AppEnums.UserRole.USER.toString().equalsIgnoreCase(userRequestDto.getRole())) {
                 userEntity.setRole(AppEnums.UserRole.USER.toString());

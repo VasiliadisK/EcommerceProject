@@ -24,7 +24,7 @@ public class UserRequestDto {
     @NotBlank(message = "email is required")
     @Email(message = "Invalid email format")
     private String email;
-    @NotBlank(message = "password is required")
+    //can be blank and in that case will get a default value from service layer
     @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&]).{8,}$",
             message = "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character")
     private String password;

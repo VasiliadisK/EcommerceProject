@@ -1,6 +1,7 @@
 package com.ecommerce.shop.Exceptions;
 
 import com.ecommerce.shop.DTO.ExceptionDto;
+import jakarta.validation.ConstraintViolation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -42,5 +43,17 @@ public class GlobalExceptionHandler {
         String message = e.getMessage();
         ExceptionDto errorResponse = new ExceptionDto(message, HttpStatus.FORBIDDEN.value());
         return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(jakarta.validation.ConstraintViolationException.class)
+    public ResponseEntity<ExceptionDto> constraintViolationException(jakarta.validation.ConstraintViolationException e) {
+        String message = e.getConstraintViolations()
+                .stream()
+                .map(ConstraintViolation::getMessage)
+                .findFirst()
+                .orElse("Validation failed");
+
+        ExceptionDto errorResponse = new ExceptionDto(message, HttpStatus.BAD_REQUEST.value());
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 }

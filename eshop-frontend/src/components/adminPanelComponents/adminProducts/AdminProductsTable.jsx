@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage, faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
-import Spinner from "../sharedComponents/utilComponents/Spinner";
-import ErrorBlock from "../sharedComponents/utilComponents/ErrorBlock";
+import Spinner from "../../sharedComponents/utilComponents/Spinner";
+import ErrorBlock from "../../sharedComponents/utilComponents/ErrorBlock";
 
 export default function AdminProductsTable({ products, onEdit, onDelete, onImage, isLoading, isError, error }) {
 

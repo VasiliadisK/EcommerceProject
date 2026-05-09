@@ -122,7 +122,6 @@ export default function Header() {
                     </Link>
                     {isAdmin() &&
                       <Link
-                        //TO-DO ADMIN PANEL
                         to="/admin"
                         onClick={() => setIsDropdownOpen(false)}
                         className="flex items-center gap-2 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-t-lg transition"

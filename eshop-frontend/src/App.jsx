@@ -16,7 +16,10 @@ import CheckoutPage from "./pages/Checkout";
 import OrderConfirmation from './components/checkoutComponents/OrderConfirmation';
 import ProtectedAdminRoute from "./components/sharedComponents/ProtectedAdminRoute";
 import AdminLayout from "./components/adminPanelComponents/AdminLayout";
-import AdminProducts from "./components/adminPanelComponents/AdminProducts";
+import AdminProducts from "./components/adminPanelComponents/adminProducts/AdminProducts";
+import AdminCategories from "./components/adminPanelComponents/adminCategories/AdminCategories";
+import AdminUsers from "./components/adminPanelComponents/adminUsers/AdminUsers"
+import AdminOrders from "./components/adminPanelComponents/adminOrders/AdminOrders"
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
@@ -39,10 +42,10 @@ function App() {
                     <AdminLayout />
                   </ProtectedAdminRoute>
                 }>
-                  {/* <Route path="orders" element={<AdminOrders />} /> */}
+                  <Route path="orders" element={<AdminOrders />} />
                   <Route path="products" element={<AdminProducts />} />
-                  {/* <Route path="categories" element={<AdminCategories />} />
-                  <Route path="users" element={<AdminUsers />} /> */}
+                  <Route path="categories" element={<AdminCategories />} />
+                  <Route path="users" element={<AdminUsers />} />
                 </Route>
               </Routes>
             </BrowserRouter>

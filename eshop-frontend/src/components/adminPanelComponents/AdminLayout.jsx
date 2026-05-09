@@ -45,7 +45,7 @@ export default function AdminLayout() {
                         />
                     </div>
 
-                    <main className="flex-1 bg-brand p-8">
+                    <main className="flex-1 bg-brand p-2 md:p-8">
                         <Outlet />
                     </main>
                 </div>

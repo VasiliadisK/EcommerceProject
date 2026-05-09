@@ -1,5 +1,5 @@
 import { useContext, useState, useEffect } from "react";
-import { ModalContext } from "../../store/ModalContext";
+import { ModalContext } from "../../../store/ModalContext";
 import AdminProductsTable from "./AdminProductsTable";
 import AdminProductFormModal from "./AdminProductFormModal"
 import DeleteConfirmModal from "./DeleteConfirmModal";
@@ -8,9 +8,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useSearchParams } from "react-router-dom";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import Filter from "../productComponents/Filter";
-import Pagination from "../sharedComponents/Pagination";
-import { getAllProductsWithPagination } from "../../http/productRequests";
+import Filter from "../../productComponents/Filter";
+import Pagination from "../../sharedComponents/Pagination";
+import { getAllProductsWithPagination } from "../../../http/productRequests";
 
 export default function ProductsPage() {
   const {

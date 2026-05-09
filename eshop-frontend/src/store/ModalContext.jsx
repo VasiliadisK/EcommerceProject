@@ -23,6 +23,22 @@ export const ModalContext = createContext({
   openAdminImageModal: () => { },
   isAdminImageModalOpen: () => { },
   getModalData: () => { },
+  openAdminCategoryAddModal: () => { },
+  isAdminCategoryAddModalOpen: () => { },
+  openAdminCategoryEditModal: () => { },
+  isAdminCategoryEditModalOpen: () => { },
+  openAdminCategoryDeleteModal: () => { },
+  isAdminCategoryDeleteModalOpen: () => { },
+  openAdminUserAddModal: () => { },
+  isAdminUserAddModalOpen: () => { },
+  openAdminUserEditModal: () => { },
+  isAdminUserEditModalOpen: () => { },
+  openAdminUserDeleteModal: () => { },
+  isAdminUserDeleteModalOpen: () => { },
+  openAdminOrderStatusModal:() => { },
+  isAdminOrderStatusModalOpen: () => { },
+  openAdminOrderDetailsModal:() => { },
+  isAdminOrderDetailsModalOpen: () => { },
 });
 
 export function ModalContextProvider({ children }) {
@@ -51,6 +67,28 @@ export function ModalContextProvider({ children }) {
   const isAdminImageModalOpen = () => activeModal === "adminImage";
   const getModalData = () => modalData;
 
+  const openAdminCategoryAddModal = () => { setActiveModal("adminCategoryAdd"); setModalData(null); };
+  const openAdminCategoryEditModal = (category) => { setActiveModal("adminCategoryEdit"); setModalData(category); };
+  const openAdminCategoryDeleteModal = (category) => { setActiveModal("adminCategoryDelete"); setModalData(category); };
+
+  const isAdminCategoryAddModalOpen = () => activeModal === "adminCategoryAdd";
+  const isAdminCategoryEditModalOpen = () => activeModal === "adminCategoryEdit";
+  const isAdminCategoryDeleteModalOpen = () => activeModal === "adminCategoryDelete";
+
+  const openAdminUserAddModal = () => { setActiveModal("adminUserAdd"); setModalData(null); };
+  const openAdminUserEditModal = (user) => { setActiveModal("adminUserEdit"); setModalData(user); };
+  const openAdminUserDeleteModal = (user) => { setActiveModal("adminUserDelete"); setModalData(user); };
+
+  const isAdminUserAddModalOpen = () => activeModal === "adminUserAdd";
+  const isAdminUserEditModalOpen = () => activeModal === "adminUserEdit";
+  const isAdminUserDeleteModalOpen = () => activeModal === "adminUserDelete";
+
+  
+const openAdminOrderStatusModal = (order) => { setActiveModal("adminOrderStatus"); setModalData(order); };
+const openAdminOrderDetailsModal = (order) => { setActiveModal("adminOrderDetails"); setModalData(order); };
+
+const isAdminOrderStatusModalOpen = () => activeModal === "adminOrderStatus";
+const isAdminOrderDetailsModalOpen = () => activeModal === "adminOrderDetails";
   const modalContext = {
     activeModal,
     modalData,
@@ -74,6 +112,22 @@ export function ModalContextProvider({ children }) {
     openAdminImageModal,
     isAdminImageModalOpen,
     getModalData,
+    openAdminCategoryAddModal,
+    isAdminCategoryAddModalOpen,
+    openAdminCategoryEditModal,
+    isAdminCategoryEditModalOpen,
+    openAdminCategoryDeleteModal,
+    isAdminCategoryDeleteModalOpen,
+    openAdminUserAddModal,
+    isAdminUserAddModalOpen,
+    openAdminUserEditModal,
+    isAdminUserEditModalOpen,
+    openAdminUserDeleteModal,
+    isAdminUserDeleteModalOpen,
+    openAdminOrderStatusModal,
+    isAdminOrderStatusModalOpen,
+    openAdminOrderDetailsModal,
+    isAdminOrderDetailsModalOpen,
   };
 
   return (

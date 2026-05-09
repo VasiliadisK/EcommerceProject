@@ -1,34 +1,25 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { deleteCategory } from "../../../http/categoryRequests";
+import Modal from "../../sharedComponents/utilComponents/Modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark, faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
-import Modal from "../sharedComponents/utilComponents/Modal";
-import Spinner from "../sharedComponents/utilComponents/Spinner";
-import { useMutation } from "@tanstack/react-query";
-import { deleteProductAdmin } from "../../http/productRequests";
 import toast from "react-hot-toast";
-import { useQueryClient } from "@tanstack/react-query";
+import Spinner from "../../sharedComponents/utilComponents/Spinner";
 
-export default function DeleteConfirmModal({ productName, productId, onClose }) {
-
+export default function CategoryDeleteModal({ category, onClose }) {
     const queryClient = useQueryClient();
 
-    const { mutate: deleteProduct, isPending } = useMutation({
-        mutationFn: deleteProductAdmin,
+    const { mutate, isPending } = useMutation({
+        mutationFn: () => deleteCategory(category.categoryId),
         onSuccess: () => {
-            queryClient.resetQueries({ queryKey: ["userCart"] });
-            queryClient.resetQueries({ queryKey: ["products"] })
-            toast.success("Item was deleted successfully")
+            toast.success("Category deleted successfully");
+            queryClient.resetQueries({ queryKey: ["getAllCategories"] });
             onClose();
-
         },
         onError: (error) => {
-            toast.error(error?.response?.data?.message || "Something went wrong while deleting the product");
+            toast.error(error?.response?.data?.message || "Something went wrong");
         },
     });
-
-    function handleDelete(itemId) {
-        deleteProduct(Number(itemId));
-
-    }
 
     return (
         <Modal open={true} onClose={onClose} className="admin-delete-modal">
@@ -45,7 +36,7 @@ export default function DeleteConfirmModal({ productName, productId, onClose }) 
             `}</style>
 
             <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
-                <h2 className="text-white font-semibold text-lg">Delete Product</h2>
+                <h2 className="text-white font-semibold text-lg">Delete Category</h2>
                 <button onClick={onClose} className="text-white/40 hover:text-white transition cursor-pointer">
                     <FontAwesomeIcon icon={faXmark} className="text-lg" />
                 </button>
@@ -57,7 +48,7 @@ export default function DeleteConfirmModal({ productName, productId, onClose }) 
                 </div>
                 <p className="text-white/70 text-sm">
                     Are you sure you want to delete{" "}
-                    <span className="text-white font-semibold">"{productName}"</span>?
+                    <span className="text-white font-semibold">"{category?.categoryName}"</span>?
                     This action cannot be undone.
                 </p>
             </div>
@@ -65,23 +56,20 @@ export default function DeleteConfirmModal({ productName, productId, onClose }) 
             <div className="flex gap-3 px-6 pb-5">
                 <button
                     onClick={onClose}
-                    className="flex-1 px-4 py-2.5 rounded-lg text-white/50 hover:text-white hover:bg-white/5 transition text-sm cursor-pointer"
+                    disabled={isPending}
+                    className="flex-1 px-4 py-2.5 rounded-lg text-white/50 hover:text-white hover:bg-white/5 transition text-sm cursor-pointer disabled:opacity-40"
                 >
                     Cancel
                 </button>
                 <button
-                    onClick={() => handleDelete(
-                        productId,
-                    )}
-                    disabled={false}
-                    className="flex-1 px-4 py-2.5 rounded-lg bg-red-500 hover:bg-red-600 text-white font-semibold transition text-sm cursor-pointer"
+                    onClick={mutate}
+                    disabled={isPending}
+                    className="flex-1 px-4 py-2.5 rounded-lg bg-red-500 hover:bg-red-600 text-white font-semibold transition text-sm cursor-pointer disabled:opacity-40"
                 >
                     {isPending ?
                         <div className="flex justify-center items-center">
                             <Spinner size="sm" borderColor="white" />
-                        </div>
-                        :
-                        "Delete"}
+                        </div> : "Delete"}
                 </button>
             </div>
         </Modal>

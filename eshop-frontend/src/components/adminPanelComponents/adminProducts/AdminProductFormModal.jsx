@@ -1,15 +1,15 @@
 import { useForm, FormProvider } from "react-hook-form";
 import { useEffect } from "react";
-import FormTextInput from "../sharedComponents/utilComponents/FormTextInput";
-import FormSelectInput from "../sharedComponents/utilComponents/FormSelectInput";
+import FormTextInput from "../../sharedComponents/utilComponents/FormTextInput";
+import FormSelectInput from "../../sharedComponents/utilComponents/FormSelectInput";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import Modal from "../sharedComponents/utilComponents/Modal";
+import Modal from "../../sharedComponents/utilComponents/Modal";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { updateProduct, createProduct } from "../../http/productRequests";
-import { getAllCategories } from "../../http/categoryRequests";
+import { updateProduct, createProduct } from "../../../http/productRequests";
+import { getAllCategories } from "../../../http/categoryRequests";
 import toast from "react-hot-toast";
-import Spinner from "../sharedComponents/utilComponents/Spinner";
+import Spinner from "../../sharedComponents/utilComponents/Spinner";
 
 export default function ProductFormModal({ product, onClose }) {
     const isEdit = !!product;

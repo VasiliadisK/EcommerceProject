@@ -1,9 +1,9 @@
 import { useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark, faCloudArrowUp } from "@fortawesome/free-solid-svg-icons";
-import Modal from "../sharedComponents/utilComponents/Modal";
+import Modal from "../../sharedComponents/utilComponents/Modal";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { updateProductImage } from "../../http/productRequests";
+import { updateProductImage } from "../../../http/productRequests";
 import toast from "react-hot-toast";
 
 export default function ImageUploadModal({ product, onClose }) {
